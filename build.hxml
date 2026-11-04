@@ -1,8 +1,10 @@
 -main Main
 -cp src
 -lib linc_directx
+-lib linc_imgui
 -cpp hxLib
 -dce no
+--debug
 
 -D dll_link
 

@@ -14,12 +14,11 @@ class DHookManager {
     public var modHooks:Map<String, Array<DModHook>>;
 
     /**
-     * Hooks specific to the game.
-     * TODO: this..
+     * Hooks specific to Project DIVA.
      * 
      * @since 1.0.0
      */
-    public var gameHooks:Map<String, Array<DModHook>>;
+    public var gameHooks:Map<String, Array<DGameHook>>;
 
     /**
      * Creates a new hook manager.
@@ -35,10 +34,13 @@ class DHookManager {
             'OnFrame' => [],
             'OnResize' => []
         ];
+        gameHooks = [
+            'OnSwapChain' => []
+        ];
     }
 
     /**
-     * Registers a new mod hook.
+     * Registers a new `DModHook`.
      * 
      * @since 1.0.0
      */
@@ -46,10 +48,26 @@ class DHookManager {
         modHooks[Type.enumConstructor(hook)].push(hook);
 
     /**
-     * Unegisters a registered mod hook.
+     * Unegisters a registered `DModHook`.
      * 
      * @since 1.0.0
      */
     public function unregisterModHook(hook:DModHook)
         modHooks[Type.enumConstructor(hook)].remove(hook);
+
+    /**
+     * Registers a new `DGameHook`.
+     * 
+     * @since 1.0.0
+     */
+    public function registerGameHook(hook:DGameHook)
+        gameHooks[Type.enumConstructor(hook)].push(hook);
+
+    /**
+     * Unegisters a registered `DGameHook`.
+     * 
+     * @since 1.0.0
+     */
+    public function unregisterGameHook(hook:DGameHook)
+        gameHooks[Type.enumConstructor(hook)].remove(hook);
 }

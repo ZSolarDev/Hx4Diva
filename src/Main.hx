@@ -1,10 +1,9 @@
 package;
 
-import diva.DTimer;
+import imgui.ImGui;
 import diva.Diva;
-import haxe.Timer;
 import dxgi.interfaces.DxgiSwapChain;
-import dxgi.structures.DxgiFrameStatistics;
+import imgui.ImGuiDx11;
 import d3d11.interfaces.D3d11Device;
 import d3d11.interfaces.D3d11DeviceContext;
 
@@ -13,23 +12,17 @@ class Main {
         trace('Called main!');
 
         Diva.initMod('Hx4Diva-TestMod', 'v1.0.0');
-        Diva.hookManager.registerModHook(Init(onInit));
         Diva.hookManager.registerModHook(D3DInit(onD3DInit));
-    }
-
-    static function onInit() {
-        trace('Init fired!');
+        Diva.hookManager.registerModHook(OnFrame(onFrame));
     }
 
     static function onD3DInit(swapChain:DxgiSwapChain, device:D3d11Device, deviceContext:D3d11DeviceContext) {
-        var stats = new DxgiFrameStatistics();
-        var result = swapChain.getFrameStatistics(stats);
-        
-        trace('OnResize fired! getFrameStatistics result: ' + StringTools.hex(result, 8));
-        trace('PresentCount: ' + stats.backing.presentCount);
-        trace('PresentRefreshCount: ' + stats.backing.presentRefreshCount);
-        trace('SyncRefreshCount: ' + stats.backing.syncRefreshCount);
-        trace('SyncQPCTime: ' + stats.syncQpcTime);
-        trace('SyncGPUTime: ' + stats.syncGpuTime);
+        ImGuiDx11.init(swapChain, device, deviceContext);
+    }
+
+    static function onFrame(swapChain:DxgiSwapChain) {
+        ImGuiDx11.begin();
+        ImGui.showDemoWindow();
+        ImGuiDx11.end(swapChain);
     }
 }

@@ -1,8 +1,8 @@
 package diva;
 
+import cpp.vm.Gc;
 import haxe.Log;
-import diva.hooks.DModHook;
-import diva.hooks.DHookManager;
+import diva.hooks.*;
 import haxe.PosInfos;
 import cpp.Star;
 import dxgi.interfaces.DxgiSwapChain;
@@ -51,10 +51,32 @@ class Diva {
      * @since 1.0.0
      */
     public static var modVersion:Null<String> = null;
+
+    /**
+     * The current `DxgiSwapChain`. Detect changes on the `onSwapChain`
+     * game hook.
+     * 
+     * @since 1.0.0
+     */
+    public static var curSwapChain(default, null):DxgiSwapChain;
+
+    /**
+     * The current `D3d11Device`. This should never change.
+     * 
+     * @since 1.0.0
+     */
+    public static var curDevice(default, null):D3d11Device;
+
+    /**
+     * The current `D3d11DeviceContext`. This should never change.
+     * 
+     * @since 1.0.0
+     */
+    public static var curDeviceContext(default, null):D3d11DeviceContext;
     
     /**
-     * The global hook manager. If you want to hook into
-     * Project DIVA, use this.
+     * The global hook manager. If you want to hook into Project DIVA,
+     * use this.
      * 
      * @see `DHookManager`
      * @since 1.0.0
@@ -70,6 +92,7 @@ class Diva {
      */
     public static function initMod(name:String, ?version:String = null) {
         Log.trace = (v:Dynamic, ?p:PosInfos) -> DLogger.info(v);
+        Gc.enable(false);
         modName = name;
         modVersion = version;
         hookManager = new DHookManager();
@@ -77,34 +100,44 @@ class Diva {
 
 	static function preInit()
 		for (hook in hookManager.modHooks['PreInit'].copy())
-            runHook(hook);
+            runModHook(hook);
 
 	static function init()
         for (hook in hookManager.modHooks['Init'].copy())
-            runHook(hook);
+            runModHook(hook);
 
 	static function postInit()
         for (hook in hookManager.modHooks['PostInit'].copy())
-            runHook(hook);
+            runModHook(hook);
 
 	static function onD3DInit(rawSwapChain:Star<NativeIDXGISwapChain>, rawDevice:Star<NativeID3D11Device>, rawDeviceContext:Star<NativeID3D11DeviceContext>) {
-        var swapChain = wrapSwapChain(rawSwapChain);
-        var device = wrapDevice(rawDevice);
-        var deviceContext = wrapDeviceContext(rawDeviceContext);
+        curSwapChain = wrapSwapChain(rawSwapChain);
+        curDevice = wrapDevice(rawDevice);
+        curDeviceContext = wrapDeviceContext(rawDeviceContext);
         for (hook in hookManager.modHooks['D3DInit'].copy())
-            runHook(hook, swapChain, device, deviceContext);
+            runModHook(hook, curSwapChain, curDevice, curDeviceContext);
+        for (hook in hookManager.gameHooks['OnSwapChain'].copy())
+            runGameHook(hook, curSwapChain);
     }
 
 	static function onFrame(rawSwapChain:Star<NativeIDXGISwapChain>) {
-        var swapChain = wrapSwapChain(rawSwapChain);
+        if (rawSwapChain != curSwapChain.ptr) {
+            curSwapChain = wrapSwapChain(rawSwapChain);
+            for (hook in hookManager.gameHooks['OnSwapChain'].copy())
+                runGameHook(hook, curSwapChain);
+        }
         for (hook in hookManager.modHooks['OnFrame'].copy())
-            runHook(hook, swapChain);
+            runModHook(hook, curSwapChain);
     }
 
 	static function onResize(rawSwapChain:Star<NativeIDXGISwapChain>) {
-        var swapChain = wrapSwapChain(rawSwapChain);
+        if (rawSwapChain != curSwapChain.ptr) {
+            curSwapChain = wrapSwapChain(rawSwapChain);
+            for (hook in hookManager.gameHooks['OnSwapChain'].copy())
+                runGameHook(hook, curSwapChain);
+        }
         for (hook in hookManager.modHooks['OnResize'].copy())
-            runHook(hook, swapChain);
+            runModHook(hook, curSwapChain);
     }
 
 	// Native utils, to create actual DirectX objects from their pointers.
@@ -126,7 +159,7 @@ class Diva {
 		return obj;
 	}
 
-    static function runHook(hook:DModHook, args:...Dynamic) {
+    static function runModHook(hook:DModHook, args:...Dynamic) {
         try {
             var argList = args.toArray();
             switch(hook) {
@@ -144,7 +177,19 @@ class Diva {
                     onResizeHook(argList[0]);
             }
         } catch (e) {
-            DLogger.error('Uncaught error in ${Type.enumConstructor(hook)}: ${e.message}\nStack:\n${e.stack.toString()}');
+            DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} mod hook: ${e.message}\nStack:\n${e.stack.toString()}');
+        }
+    }
+
+    static function runGameHook(hook:DGameHook, args:...Dynamic) {
+        try {
+            var argList = args.toArray();
+            switch(hook) {
+                case OnSwapChain(onSwapChain):
+                    onSwapChain(argList[0]);
+            }
+        } catch (e) {
+            DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} game hook: ${e.message}\nStack:\n${e.stack.toString()}');
         }
     }
 }
