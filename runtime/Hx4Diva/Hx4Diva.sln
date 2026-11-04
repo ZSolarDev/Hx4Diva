@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hx4Diva", "Hx4Diva.vcxproj", "{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Debug|x64.ActiveCfg = Debug|x64
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Debug|x64.Build.0 = Debug|x64
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Debug|x86.ActiveCfg = Debug|Win32
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Debug|x86.Build.0 = Debug|Win32
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Release|x64.ActiveCfg = Release|x64
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Release|x64.Build.0 = Release|x64
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Release|x86.ActiveCfg = Release|Win32
+		{89E5BC7B-03A0-4CD1-A79F-2D31B6869F8C}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA15B5A1-A8C4-4B6F-B50A-FEFBBBFD3C17}
+	EndGlobalSection
+EndGlobal

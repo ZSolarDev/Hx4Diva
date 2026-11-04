@@ -1,0 +1,10 @@
+-main Main
+-cp src
+-lib linc_directx
+-cpp hxLib
+-dce no
+
+-D dll_link
+
+--macro addGlobalMetadata('d3d11', "@:headerCode('#include <vector>')", true, true, false)
+--macro addGlobalMetadata('dxgi', "@:headerCode('#include <vector>')", true, true, false)

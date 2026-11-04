@@ -1,0 +1,2 @@
+haxelib git hxcpp_extern_helpers https://github.com/Aidan63/hxcpp_extern_helpers
+haxelib git linc_directx https://github.com/Aidan63/linc_directx
