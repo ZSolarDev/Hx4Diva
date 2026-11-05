@@ -3,6 +3,8 @@
 #include <dxgi.h>
 #include <vector>
 #include <string>
+#include "hooks.h"
+#include "diva.h"
 
 // Loads all DLLs from the "hxLib" folder and loads them.
 std::vector<HMODULE> loadedLibs;
@@ -61,6 +63,48 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved) {
     return TRUE;
 }
 
+// Taken from new classics.
+HOOK(bool, __fastcall, TaskPvGameInit, 0x1405DA040, uint64_t a1)
+{
+    CallOnAll<void()>("OnPvInit");
+    return originalTaskPvGameInit(a1);
+}
+
+HOOK(bool, __fastcall, PVGameLoaderFinishUp, 0x140262730, void* a1)
+{
+    CallOnAll<void()>("OnPvInitComplete");
+    return originalPVGameLoaderFinishUp(a1);
+}
+
+HOOK(bool, __fastcall, TaskPvGameCtrl, 0x1405DA060, uint64_t a1)
+{
+    CallOnAll<void()>("OnPvUpdate");
+    return originalTaskPvGameCtrl(a1);
+}
+
+HOOK(bool, __fastcall, TaskPvGameDest, 0x1405DA0A0, uint64_t a1)
+{
+    CallOnAll<void()>("OnPvExit");
+    return originalTaskPvGameDest(a1);
+}
+
+HOOK(void, __fastcall, PVGameReset, 0x1402436F0, PVGameData* pv_game)
+{
+    CallOnAll<void()>("OnPvReset");
+    originalPVGameReset(pv_game);
+}
+
+HOOK(HitState, __fastcall, GetHitStateInternal, 0x14026D2E0,
+    PVGameArcade* game,
+    PvGameTarget* target,
+    uint16_t a3,
+    uint16_t a4)
+{
+    HitState result = originalGetHitStateInternal(game, target, a3, a4);
+    CallOnAll<void(PVGameArcade*, PvGameTarget*, HitState*)>("OnPvGetHitState", game, target, &result);
+	return result;
+}
+
 // DML hooks for Haxe libraries to call into, taken straight from the DML readme.
 extern "C" {
     void __declspec(dllexport) PreInit() {
@@ -68,6 +112,13 @@ extern "C" {
     }
 
     void __declspec(dllexport) Init() {
+        INSTALL_HOOK(TaskPvGameInit);
+		INSTALL_HOOK(PVGameLoaderFinishUp);
+		INSTALL_HOOK(TaskPvGameCtrl);
+		INSTALL_HOOK(TaskPvGameDest);
+		INSTALL_HOOK(PVGameReset);
+		INSTALL_HOOK(GetHitStateInternal);
+
         CallOnAll<void()>("Init");
     }
 
@@ -88,5 +139,4 @@ extern "C" {
     void __declspec(dllexport) OnResize(IDXGISwapChain* swapChain) {
         CallOnAll<void(IDXGISwapChain*)>("OnResize", swapChain);
     }
-
 }

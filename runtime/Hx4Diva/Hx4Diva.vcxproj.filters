@@ -13,10 +13,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\safetyhook">
+      <UniqueIdentifier>{d010c81b-9876-42d4-940a-76b7505904e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\safetyhook\src">
+      <UniqueIdentifier>{235e313b-404e-43c6-a81b-805e42f088b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Zydis.c">
+      <Filter>Header Files\safetyhook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="safetyhook.cpp">
+      <Filter>Header Files\safetyhook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="diva.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Zydis.h">
+      <Filter>Header Files\safetyhook</Filter>
+    </ClInclude>
+    <ClInclude Include="safetyhook.hpp">
+      <Filter>Header Files\safetyhook</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="diva.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

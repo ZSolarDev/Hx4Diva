@@ -35,7 +35,13 @@ class DHookManager {
             'OnResize' => []
         ];
         gameHooks = [
-            'OnSwapChain' => []
+            'OnSwapChain' => [],
+            'OnPvInit' => [],
+            'OnPvInitComplete' => [],
+            'OnPvUpdate' => [],
+            'OnPvExit' => [],
+            'OnPvReset' => [],
+            'OnPvGetHitState' => []
         ];
     }
 

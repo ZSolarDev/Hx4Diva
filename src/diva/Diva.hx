@@ -1,5 +1,9 @@
 package diva;
 
+import diva.types.hooktypes.*;
+import cpp.Reference;
+import cpp.Pointer;
+import diva.types.*;
 import cpp.vm.Gc;
 import haxe.Log;
 import diva.hooks.*;
@@ -17,6 +21,14 @@ import d3d11.interfaces.D3d11DeviceContext.NativeID3D11DeviceContext;
  * 
  * @since 1.0.0
  */
+#if !display
+@:build(linc.Linc.touch())
+@:build(linc.Linc.xml("diva", "../../"))
+#end
+@:include('diva_types.h')
+// I am technically sharing the diva namespace between
+// diva_types.h and my package, but hxcpp has special naming conventions
+// internally, so it shouldn't be an issue.
 @:cppFileCode('
 extern "C" __declspec(dllexport) void PreInit() {
     ::diva::Diva_obj::preInit();
@@ -35,6 +47,31 @@ extern "C" __declspec(dllexport) void OnFrame(IDXGISwapChain* swapChain) {
 }
 extern "C" __declspec(dllexport) void OnResize(IDXGISwapChain* swapChain) {
     ::diva::Diva_obj::onResize(swapChain);
+}
+
+// Game hooks
+extern "C" __declspec(dllexport) void OnPvInit() {
+    ::diva::Diva_obj::onPvInit();
+}
+
+extern "C" __declspec(dllexport) void OnPvInitComplete() {
+    ::diva::Diva_obj::onPvInitComplete();
+}
+
+extern "C" __declspec(dllexport) void OnPvUpdate() {
+    ::diva::Diva_obj::onPvUpdate();
+}
+
+extern "C" __declspec(dllexport) void OnPvExit() {
+    ::diva::Diva_obj::onPvExit();
+}
+
+extern "C" __declspec(dllexport) void OnPvReset() {
+    ::diva::Diva_obj::onPvReset();
+}
+
+extern "C" __declspec(dllexport) void OnPvGetHitState(PVGameArcade* game, PvGameTarget* target, HitState* result) {
+    ::diva::Diva_obj::onPvGetHitState(game, target, result);
 }
 ')
 class Diva {
@@ -140,7 +177,49 @@ class Diva {
             runModHook(hook, curSwapChain);
     }
 
-	// Native utils, to create actual DirectX objects from their pointers.
+    // --------- GAME HOOKS --------- //
+    static function onPvInit()
+        for (hook in hookManager.gameHooks['OnPvInit'].copy())
+            runGameHook(hook);
+
+    static function onPvInitComplete()
+        for (hook in hookManager.gameHooks['OnPvInitComplete'].copy())
+            runGameHook(hook);
+
+    static function onPvUpdate()
+        for (hook in hookManager.gameHooks['OnPvUpdate'].copy())
+            runGameHook(hook);
+
+    static function onPvExit()
+        for (hook in hookManager.gameHooks['OnPvExit'].copy())
+            runGameHook(hook);
+
+    static function onPvReset()
+        for (hook in hookManager.gameHooks['OnPvReset'].copy())
+            runGameHook(hook);
+
+    static var hitCtx:HitContext = new HitContext();
+    static function onPvGetHitState(game:Star<PVGameArcade>, target:Star<PvGameTarget>, result:Pointer<HitState>) {
+        hitCtx.game = Pointer.fromStar(game);
+        hitCtx.target = Pointer.fromStar(target);
+        hitCtx.result = result.ref;
+
+        for (hook in hookManager.gameHooks['OnPvGetHitState'].copy()) {
+            switch (hook) {
+                case OnPvGetHitState(cb):
+                    try {
+                        cb(hitCtx);
+                    } catch (e) {
+                        DLogger.error('Uncaught error during OnPvGetHitState game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+                    }
+                default:
+            }
+        }
+
+        result.ref = hitCtx.result;
+    }
+
+	// --------- UTILS --------- //
 	static function wrapSwapChain(rawPtr:Star<NativeIDXGISwapChain>):DxgiSwapChain {
 		var obj = new DxgiSwapChain();
 		untyped __cpp__('{0}->ptr = {1}', obj, rawPtr);
@@ -187,6 +266,17 @@ class Diva {
             switch(hook) {
                 case OnSwapChain(onSwapChain):
                     onSwapChain(argList[0]);
+                case OnPvInit(onPvInitHook):
+                    onPvInitHook();
+                case OnPvInitComplete(onPvInitCompleteHook):
+                    onPvInitCompleteHook();
+                case OnPvUpdate(onPvUpdateHook):
+                    onPvUpdateHook();
+                case OnPvExit(onPvExitHook):
+                    onPvExitHook();
+                case OnPvReset(onPvResetHook):
+                    onPvResetHook();
+                default:
             }
         } catch (e) {
             DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} game hook: ${e.message}\nStack:\n${e.stack.toString()}');

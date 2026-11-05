@@ -127,6 +127,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,7 +136,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="diva.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="safetyhook.cpp" />
+    <ClCompile Include="Zydis.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="diva.h" />
+    <ClInclude Include="hooks.h" />
+    <ClInclude Include="safetyhook.hpp" />
+    <ClInclude Include="Zydis.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
