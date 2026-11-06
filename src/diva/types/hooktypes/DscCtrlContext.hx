@@ -1,10 +1,11 @@
 package diva.types.hooktypes;
 
 import cpp.Pointer;
-import cpp.StdString;
 
 class DscCtrlContext {
-	public var data:Pointer<PvDBEntry>;
+	public var data:Pointer<PVGamePvData>;
+	public var entry:Pointer<PvDBEntry>;
+	public var difficulty:Pointer<PvDBDifficulty>;
 	public var path:String;
 	public var result:Bool;
 

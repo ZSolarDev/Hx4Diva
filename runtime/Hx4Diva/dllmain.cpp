@@ -60,6 +60,24 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved) {
     return TRUE;
 }
 
+// To get the current PV entry and difficulty, you can use this function. It will set the out parameters to nullptr if it fails to find
+// the entry or difficulty.
+static void ResolveCurrentPv(pv_db::PvDBEntry** out_entry, pv_db::PvDBDifficulty** out_diff)
+{
+    *out_entry = nullptr;
+    *out_diff = nullptr;
+
+    auto* load = game::GetPVLoadParam();
+    auto& param = load->data[load->data[0].int8];
+
+    void* entry = pv_db::FindPVEntry(param.pv_id);
+    if (!entry)
+        return;
+
+    *out_entry = static_cast<pv_db::PvDBEntry*>(entry);
+    *out_diff = pv_db::FindDifficulty(entry, param.difficulty, param.edition);
+}
+
 // Taken from new classics.
 HOOK(bool, __fastcall, TaskPvGameInit, 0x1405DA040, uint64_t a1)
 {
@@ -105,7 +123,17 @@ HOOK(HitState, __fastcall, GetHitStateInternal, 0x14026D2E0,
 HOOK(bool, __fastcall, LoadDscCtrl, 0x14024E270, PVGamePvData* pv_data, prj::string& path, void* a3, bool a4)
 {
     bool result = originalLoadDscCtrl(pv_data, path, a3, a4);
-    CallOnAll<void(PVGamePvData*, std::string&, bool*)>("OnLoadDscUpdate", pv_data, std::string(path.data(), path.size()), &result);
+	pv_db::PvDBEntry* entry = nullptr;
+	pv_db::PvDBDifficulty* diff = nullptr;
+	ResolveCurrentPv(&entry, &diff);
+    CallOnAll<void(PVGamePvData*, pv_db::PvDBEntry*, pv_db::PvDBDifficulty*, std::string&, bool*)>("OnLoadDscUpdate", pv_data, entry, diff, std::string(path.data(), path.size()), &result);
+	return result;
+}
+
+HOOK(bool, __fastcall, TaskPvDBParseEntry, 0x1404B1020, uint64_t a1, pv_db::PvDBEntry* entry, void* prop, int32_t id)
+{
+	bool result = originalTaskPvDBParseEntry(a1, entry, prop, id);
+	CallOnAll<void(pv_db::PvDBEntry*, bool*)>("OnPvDBParseEntry", entry, &result);
 	return result;
 }
 
@@ -123,6 +151,7 @@ extern "C" {
 		INSTALL_HOOK(PVGameReset);
 		INSTALL_HOOK(GetHitStateInternal);
 		INSTALL_HOOK(LoadDscCtrl);
+		INSTALL_HOOK(TaskPvDBParseEntry);
 
         CallOnAll<void()>("Init");
     }

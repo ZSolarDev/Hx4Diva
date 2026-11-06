@@ -975,6 +975,7 @@ namespace pv_db
 	};
 }
 
-inline bool DifficultySlotValid(int slot) { return slot >= 0 && slot < 5; }
-inline size_t DifficultyCount(pv_db::PvDBEntry& e, int slot) { return DifficultySlotValid(slot) ? e.difficulties[slot].size() : 0; }
+inline bool DifficultySlotInRange(int slot) { return slot >= 0 && slot < 5; }
+inline size_t DifficultyCount(pv_db::PvDBEntry& e, int slot) { return DifficultySlotInRange(slot) ? e.difficulties[slot].size() : 0; }
+inline bool DifficultySlotHasData(pv_db::PvDBEntry& e, int slot) { return DifficultyCount(e, slot) > 0; }
 inline pv_db::PvDBDifficulty& DifficultyAt(pv_db::PvDBEntry& e, int slot, size_t i) { return e.difficulties[slot][i]; }

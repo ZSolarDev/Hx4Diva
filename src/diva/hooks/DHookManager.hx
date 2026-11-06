@@ -42,7 +42,8 @@ class DHookManager {
 			'OnPvExit' => [],
 			'OnPvReset' => [],
 			'OnPvGetHitState' => [],
-			'OnLoadDscUpdate' => []
+			'OnLoadDscUpdate' => [],
+			'OnPvDBParseEntry' => []
 		];
 	}
 

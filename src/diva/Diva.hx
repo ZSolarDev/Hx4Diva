@@ -29,12 +29,11 @@ import haxe.Resource;
 @:build(linc.Linc.xml("diva", "../../"))
 #end
 @:include('diva_types.h')
+@:include('string')
 // I am technically sharing the diva namespace between
 // diva_types.h and my package, but hxcpp has special naming conventions
 // internally, so it shouldn't be an issue.
 @:cppFileCode('
-#include <string>
-
 extern "C" __declspec(dllexport) void PreInit() {
     ::diva::Diva_obj::preInit();
 }
@@ -79,8 +78,12 @@ extern "C" __declspec(dllexport) void OnPvGetHitState(PVGameArcade* game, PvGame
     ::diva::Diva_obj::onPvGetHitState(game, target, result);
 }
 
-extern "C" __declspec(dllexport) void OnLoadDscUpdate(pv_db::PvDBEntry* data, std::string& path, bool* result) {
-    ::diva::Diva_obj::onLoadDscUpdate(data, path, result);
+extern "C" __declspec(dllexport) void OnLoadDscUpdate(PVGamePvData* data, pv_db::PvDBEntry* entry, pv_db::PvDBDifficulty* difficulty, std::string& path, bool* result) {
+    ::diva::Diva_obj::onLoadDscUpdate(data, entry, difficulty, path, result);
+}
+
+extern "C" __declspec(dllexport) void OnPvDBParseEntry(pv_db::PvDBEntry* entry, bool* result) {
+    ::diva::Diva_obj::onPvDBParseEntry(entry, result);
 }
 ')
 class Diva {
@@ -147,6 +150,15 @@ class Diva {
 		}
 		hookManager = new DHookManager();
 	}
+
+	/**
+	 * Turns a `RawStdString` into a `String`.
+	 * 
+	 * @param rawStr The string to convert.
+	 * @since 1.0.0
+	 */
+	public static function toString(rawStr:RawStdString):String
+		return rawStr.c_str().toString();
 
 	static function preInit()
 		for (hook in hookManager.modHooks['PreInit'].copy())
@@ -235,9 +247,11 @@ class Diva {
 
 	static var dscCtrlCtx:DscCtrlContext = new DscCtrlContext();
 
-	static function onLoadDscUpdate(data:Star<PvDBEntry>, path:StdString, result:Pointer<Bool>) {
+	static function onLoadDscUpdate(data:Star<PVGamePvData>, entry:Star<PvDBEntry>, difficulty:Star<PvDBDifficulty>, path:RawStdString, result:Pointer<Bool>) {
 		dscCtrlCtx.data = Pointer.fromStar(data);
-		dscCtrlCtx.path = path.toString();
+		dscCtrlCtx.entry = entry != null ? Pointer.fromStar(entry) : null;
+		dscCtrlCtx.difficulty = difficulty != null ? Pointer.fromStar(difficulty) : null;
+		dscCtrlCtx.path = toString(path);
 		dscCtrlCtx.result = result.ref;
 
 		for (hook in hookManager.gameHooks['OnLoadDscUpdate'].copy()) {
@@ -253,6 +267,27 @@ class Diva {
 		}
 
 		result.ref = dscCtrlCtx.result;
+	}
+
+	static var pvdbParseCtx:PvDBParseContext = new PvDBParseContext();
+
+	static function onPvDBParseEntry(entry:Star<PvDBEntry>, result:Pointer<Bool>) {
+		pvdbParseCtx.entry = Pointer.fromStar(entry);
+		pvdbParseCtx.result = result.ref;
+
+		for (hook in hookManager.gameHooks['OnPvDBParseEntry'].copy()) {
+			switch (hook) {
+				case OnPvDBParseEntry(cb):
+					try {
+						cb(pvdbParseCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnPvDBParseEntry game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+
+		result.ref = pvdbParseCtx.result;
 	}
 
 	// --------- UTILS --------- //
