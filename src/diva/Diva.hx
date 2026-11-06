@@ -3,6 +3,7 @@ package diva;
 import cpp.Pointer;
 import cpp.Reference;
 import cpp.Star;
+import cpp.StdString;
 import cpp.vm.Gc;
 import d3d11.interfaces.D3d11Device.NativeID3D11Device;
 import d3d11.interfaces.D3d11Device;
@@ -32,6 +33,8 @@ import haxe.Resource;
 // diva_types.h and my package, but hxcpp has special naming conventions
 // internally, so it shouldn't be an issue.
 @:cppFileCode('
+#include <string>
+
 extern "C" __declspec(dllexport) void PreInit() {
     ::diva::Diva_obj::preInit();
 }
@@ -74,6 +77,10 @@ extern "C" __declspec(dllexport) void OnPvReset() {
 
 extern "C" __declspec(dllexport) void OnPvGetHitState(PVGameArcade* game, PvGameTarget* target, HitState* result) {
     ::diva::Diva_obj::onPvGetHitState(game, target, result);
+}
+
+extern "C" __declspec(dllexport) void OnLoadDscUpdate(pv_db::PvDBEntry* data, std::string& path, bool* result) {
+    ::diva::Diva_obj::onLoadDscUpdate(data, path, result);
 }
 ')
 class Diva {
@@ -224,6 +231,28 @@ class Diva {
 		}
 
 		result.ref = hitCtx.result;
+	}
+
+	static var dscCtrlCtx:DscCtrlContext = new DscCtrlContext();
+
+	static function onLoadDscUpdate(data:Star<PvDBEntry>, path:StdString, result:Pointer<Bool>) {
+		dscCtrlCtx.data = Pointer.fromStar(data);
+		dscCtrlCtx.path = path.toString();
+		dscCtrlCtx.result = result.ref;
+
+		for (hook in hookManager.gameHooks['OnLoadDscUpdate'].copy()) {
+			switch (hook) {
+				case OnLoadDscUpdate(cb):
+					try {
+						cb(dscCtrlCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnLoadDscUpdate game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+
+		result.ref = dscCtrlCtx.result;
 	}
 
 	// --------- UTILS --------- //

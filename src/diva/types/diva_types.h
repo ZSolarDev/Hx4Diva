@@ -471,13 +471,6 @@ struct PvDscTargetGroup
 
 inline PvDscTarget& GroupTargetAt(PvDscTargetGroup& g, int i) { return g.targets[i]; }
 
-struct TargetVec {
-    PvDscTargetGroup* first;
-    PvDscTargetGroup* last;
-    PvDscTargetGroup* end_cap;
-};
-static_assert(sizeof(TargetVec) == 24, "Vector layout changed.");
-
 struct PVGameData;
 struct PVGameArcade;
 
@@ -531,9 +524,7 @@ struct PVGamePvData
 	bool is_dsc_ac200_format;
 	uint8_t pad2C4E2[2];
 	int targets_remaining;
-    // Used to be prj::vector<PvDscTargetGroup>
-    // Changed so that haxe could read it.
-	TargetVec targets;
+	prj::vector<PvDscTargetGroup> targets;
 	size_t target_index;
 	float float2C508;
 	char char2C50C;
@@ -549,9 +540,8 @@ struct PVGamePvData
 	float float2C82C;
 };
 
-// Haxe helpers.
-inline size_t TargetCount(PVGamePvData& d) { return d.targets.last - d.targets.first; }
-inline PvDscTargetGroup& TargetAt(PVGamePvData& d, size_t i) { return d.targets.first[i]; }
+inline size_t TargetCount(PVGamePvData& d) { return d.targets.size(); }
+inline PvDscTargetGroup& TargetAt(PVGamePvData& d, size_t i) { return d.targets[i]; }
 inline PVGameData& PvDataGame(PVGamePvData& d) { return *d.pv_game; }
 
 struct PvGameTarget
@@ -984,3 +974,7 @@ namespace pv_db
 		uint8_t gap128[664];
 	};
 }
+
+inline bool DifficultySlotValid(int slot) { return slot >= 0 && slot < 5; }
+inline size_t DifficultyCount(pv_db::PvDBEntry& e, int slot) { return DifficultySlotValid(slot) ? e.difficulties[slot].size() : 0; }
+inline pv_db::PvDBDifficulty& DifficultyAt(pv_db::PvDBEntry& e, int slot, size_t i) { return e.difficulties[slot][i]; }

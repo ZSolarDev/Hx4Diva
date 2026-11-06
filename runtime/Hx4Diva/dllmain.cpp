@@ -102,6 +102,13 @@ HOOK(HitState, __fastcall, GetHitStateInternal, 0x14026D2E0,
 	return result;
 }
 
+HOOK(bool, __fastcall, LoadDscCtrl, 0x14024E270, PVGamePvData* pv_data, prj::string& path, void* a3, bool a4)
+{
+    bool result = originalLoadDscCtrl(pv_data, path, a3, a4);
+    CallOnAll<void(PVGamePvData*, std::string&, bool*)>("OnLoadDscUpdate", pv_data, std::string(path.data(), path.size()), &result);
+	return result;
+}
+
 // DML hooks for Haxe libraries to call into, taken straight from the DML readme.
 extern "C" {
     void __declspec(dllexport) PreInit() {
@@ -115,6 +122,7 @@ extern "C" {
 		INSTALL_HOOK(TaskPvGameDest);
 		INSTALL_HOOK(PVGameReset);
 		INSTALL_HOOK(GetHitStateInternal);
+		INSTALL_HOOK(LoadDscCtrl);
 
         CallOnAll<void()>("Init");
     }
