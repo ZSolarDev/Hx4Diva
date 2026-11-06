@@ -6,7 +6,7 @@
 #include "hooks.h"
 #include "diva.h"
 
-// Loads all DLLs from the "hxLib" folder and loads them.
+// Loads all libs from a folder.
 std::vector<HMODULE> loadedLibs;
 
 void LoadAllFromFolder(const char* folder) {
@@ -47,18 +47,15 @@ void CallOnAll(const char* exportName, Args... args) {
     }
 }
 
-// Loads all DLLs from the "hxLib" folder and calls their "hxRunLibrary" export on process attach, and unloads them on process detach.
+// Loads all DLLs from the "hxLibs" folder and calls their "hxRunLibrary" export on process attach, and unloads them on process detach.
 // Yes, Haxe uses hxRunLibrary instead of the standard DllMain. Dunno why, but honestly it was much more compatible than I had expected.
 // Better than not being able to compile DLLs at all, so I guess I'll take it.
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved) {
     switch (fdwReason) {
-    case DLL_PROCESS_ATTACH:
-        LoadAllFromFolder("hxLib");
-        CallOnAll<void()>("hxRunLibrary");
-        break;
-    case DLL_PROCESS_DETACH:
-        UnloadAll();
-        break;
+        case DLL_PROCESS_ATTACH:
+            LoadAllFromFolder("hxLibs");
+            CallOnAll<void()>("hxRunLibrary");
+            break;
     }
     return TRUE;
 }

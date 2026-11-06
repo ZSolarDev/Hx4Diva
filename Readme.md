@@ -2,16 +2,31 @@
 
 ## Compiling
 
-To compile, run:
+If you don't have haxe installed, get it off the website. OR you can get it with like winget or something:
 
-```haxe
-haxelib git hxcpp_extern_helpers https://github.com/Aidan63/hxcpp_extern_helpers
-haxelib git linc_directx https://github.com/Aidan63/linc_directx
+```bat
+winget install --id HaxeFoundation.Haxe
+haxelib setup
 ```
 
-Then open `runtime/Hx4Diva/Hx4Diva.vcxproj` in Visual Studio and build the project. Take the dll from `runtime/Hx4Diva/x64/Release/Hx4Diva.dll` and put it in a new mod for Project DIVA.
+After that or if you already had haxe installed, set up the libraries:
 
-Then to compile haxe-side, do `haxe build.hxml` and take the resulting dll under `hxLib`. Then in your new mod for Project DIVA, make a `hxLib/` folder, and put the haxe-side dll in it. Ensure your mods `config.toml` loads specifically the Hx4Diva dll build from visual studio.
+```bat
+haxelib git hxcpp_extern_helpers https://github.com/Aidan63/hxcpp_extern_helpers
+haxelib git linc_directx https://github.com/Aidan63/linc_directx
+haxelib git linc_imgui https://github.com/Aidan63/linc_imgui
+
+haxelib install hxp
+haxelib run hxp --install-hxp-alias
+```
+
+Then you can simply just run:
+
+```bat
+hxp BuildMod
+```
+
+And you're done! The mod will be inside of `./Hx4Diva-TestMod/`, or whatever is in the `modOutput` field of the `mod.json`.
 
 ## Credits
 
