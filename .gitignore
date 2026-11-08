@@ -1,7 +1,3 @@
-hxLib/
 runtime/Hx4Diva/Hx4Diva
 runtime/Hx4Diva/.vs
-hx4diva-testmod_hxOut
-Hx4Diva-TestMod
-_hxOut.hxml
-_mod.json
+.vscode/

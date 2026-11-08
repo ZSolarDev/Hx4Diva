@@ -1,0 +1,16 @@
+{
+  "name": "Hx4Diva",
+  "url" : "https://github.com/ZSolarDev/Hx4Diva",
+  "license": "MIT",
+  "tags": ["project-diva", "hxcpp", "useless"],
+  "description": "A framework for modding Project DIVA Mega Mix+ in Haxe.",
+  "version": "1.0.0-alpha.1",
+  "classPath": "src/",
+  "releasenote": "Initial release, 22 NM(non-mod) hooks.",
+  "contributors": ["ZSolarDev", "Clover", "Koren", "Aura39", "Vixen"],
+  "dependencies": {
+    "hxcpp": "",
+    "hxp": ""
+  },
+  "main": "tools.Run"
+}

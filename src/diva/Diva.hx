@@ -23,9 +23,9 @@ import haxe.PosInfos;
 import haxe.Resource;
 
 /**
- * The main class you'll use to interact with Project DIVA.
+ * The main class you'll use to interact with the game.
  * 
- * @since 1.0.0
+ * @since 1.0.0-alpha.1
  */
 #if !display
 @:build(linc.Linc.touch())
@@ -166,14 +166,14 @@ class Diva {
 	/**
 	 * The name of the mod.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static var modName:String = 'UnknownMod';
 
 	/**
 	 * The version of the mod.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static var modVersion:Null<String> = null;
 
@@ -181,41 +181,46 @@ class Diva {
 	 * The current `DxgiSwapChain`. Detect changes on the `onSwapChain`
 	 * game hook.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static var curSwapChain(default, null):DxgiSwapChain;
 
 	/**
 	 * The current `D3d11Device`. This should never change.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static var curDevice(default, null):D3d11Device;
 
 	/**
 	 * The current `D3d11DeviceContext`. This should never change.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static var curDeviceContext(default, null):D3d11DeviceContext;
 
 	/**
-	 * The global hook manager. If you want to hook into Project DIVA,
-	 * use this.
+	 * The global hook manager. This is mainly what you'd use to hook into
+	 * the game.
 	 * 
 	 * @see `DHookManager`
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static var hookManager:DHookManager;
 
+	/**
+	 * The global task manager. This is mainly what you'd use to create
+	 * tasks that run in the game.
+	 * 
+	 * @see `DTaskManager`
+	 * @since 1.0.0-alpha.1
+	 */
 	public static var taskManager:DTaskManager;
 
 	/**
-	 * Initializes the mod.
+	 * Initializes the mod. Required.
 	 * 
-	 * @param name The name of the mod.
-	 * @param version The version of the mod. Optional.
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static function initMod() {
 		Log.trace = (v:Dynamic, ?p:PosInfos) -> DLogger.info(v);
@@ -234,7 +239,7 @@ class Diva {
 	 * Turns a `RawStdString` into a `String`.
 	 * 
 	 * @param rawStr The string to convert.
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public static function toString(rawStr:RawStdString):String
 		return rawStr.c_str().toString();

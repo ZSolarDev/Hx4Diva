@@ -3,13 +3,44 @@ package diva.hooks;
 import diva.types.hooktypes.*;
 
 enum DFTMenuHook {
-	// Runs when the pv select menu is initialized. Run logic here.
+	/**
+	 * Runs when the PV select menu is initialized. Run
+	 * initialization logic here.
+	 * 
+	 * @param hook The hook.
+	 * @since 1.0.0-alpha.1
+	 */
 	OnMenuInit(hook:FTMenuSelectionContext->Void);
+
+	/**
+	 * Runs when the game builds it's sorted list of PV's.
+	 * 
+	 * @param hook The hook.
+	 * @since 1.0.0-alpha.1
+	 */
 	OnMenuCreateSortedPVList(hook:BasicFTMenuSelectionContext->Void);
-	// Called when the pv select menu is updated.
+
+	/**
+	 * Runs when the PV select menu is updated.
+	 * 
+	 * @param hook The hook.
+	 * @since 1.0.0-alpha.1
+	 */
 	OnMenuUpdate(hook:FTMenuSelectionContext->Void);
-	// Called when the pv select menu is drawn. Draw here.
+
+	/**
+	 * Runs when the PV select menu is drawn. Draw here.
+	 * 
+	 * @param hook The hook.
+	 * @since 1.0.0-alpha.1
+	 */
 	OnMenuDraw(hook:Void->Void);
-	// Called when the pv select menu is exited.
+
+	/**
+	 * Runs when the PV select menu is exited.
+	 * 
+	 * @param hook The hook.
+	 * @since 1.0.0-alpha.1
+	 */
 	OnMenuExit(hook:ResultContext->Void);
 }

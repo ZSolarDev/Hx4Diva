@@ -1,0 +1,9 @@
+{
+    "name": "{NAME}",
+    "description": "A template mod.",
+    "authors": ["Authors here"],
+    "version": "v0.0.0",
+    "main": "Main",
+    "classPath": "src",
+    "modOutput": "{NAME}"
+}

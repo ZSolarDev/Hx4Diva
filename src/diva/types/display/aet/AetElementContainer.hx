@@ -4,6 +4,19 @@ import cpp.Pointer;
 import cpp.Reference;
 import cpp.UInt32;
 
+/**
+ * This container makes it much easier to use Aet elements.
+ * You can simply use them as such:
+ * 
+ * ```haxe
+ * var container = new AetElementContainer();
+ * var element = container.element;
+ * element.setScene(sceneIdHere);
+ * element.setLayer(layerName, prio, resMode, action);
+ * ```
+ * 
+ * @since 1.0.0-alpha.1
+ */
 class AetElementContainer {
 	public var __element(default, null):Pointer<AetElement> = null;
 

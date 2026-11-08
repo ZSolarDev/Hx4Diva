@@ -6,6 +6,11 @@ import cpp.Int32;
 import cpp.RawPointer;
 import cpp.UInt32;
 
+/**
+ * This class makes it easier to interface with AET elements.
+ * 
+ * @since 1.0.0-alpha.1
+ */
 @:include('diva_types.h')
 @:include('aet_helper.h')
 @:native('AetElement')

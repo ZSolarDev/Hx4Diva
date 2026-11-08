@@ -1,0 +1,62 @@
+=========================================================================================================
+
+888    888              d8888  8888888b.  d8b                   
+888    888             d8P888  888  "Y88b Y8P                   
+888    888            d8P 888  888    888                       
+8888888888 888  888  d8P  888  888    888 888 888  888  8888b.  
+888    888 `Y8bd8P' d88   888  888    888 888 888  888     "88b 
+888    888   X88K   8888888888 888    888 888 Y88  88P .d888888 
+888    888 .d8""8b.       888  888  .d88P 888  Y8bd8P  888  888 
+888    888 888  888       888  8888888P"  888   Y88P   "Y888888 
+  ____  ____     __         ___          
+ /_  / / __/__  / /__ _____/ _ \___ _  __
+  / /__\ \/ _ \/ / _ `/ __/ // / -_) |/ /
+ /___/___/\___/_/\_,_/_/ /____/\__/|___/ 
+
+Ver. {VERSION_PLACEHOLDER}
+_________________________________________________________________________________________________________
+
+Usage: hx4diva [command] [options] [flags]
+    Commands
+        build     : Compiles a folder containing source code and a valid mod project file into a mod.
+            - [optional] path :  Path to the mod's project file. Defaults to mod.json if left undefined.
+                           Ex : hx4diva build project.json
+
+        create    : Creates a blank mod project.
+            - [optional] name : Name of project. Set to "DummyMod" if left undefined.
+                           Ex : hx4diva create "Testing Mod"
+
+        setup     : Fully sets up Hx4Diva for use. Makes the "hx4diva" command directly accesible.
+        help      : Info on all commands.
+
+    Flags
+        -verbose  : Gives more information/transparency on background processes of the command running.
+                    (only available for 'build, create')
+
+        -debug    : Compiles the mod project in debug mode.
+                    (only available for 'build')
+
+=========================================================================================================
+    
+==--==
+
+=========================================================================================================
+
+888    888              d8888  8888888b.  d8b                   
+888    888             d8P888  888  "Y88b Y8P                   
+888    888            d8P 888  888    888                       
+8888888888 888  888  d8P  888  888    888 888 888  888  8888b.  
+888    888 `Y8bd8P' d88   888  888    888 888 888  888     "88b 
+888    888   X88K   8888888888 888    888 888 Y88  88P .d888888 
+888    888 .d8""8b.       888  888  .d88P 888  Y8bd8P  888  888 
+888    888 888  888       888  8888888P"  888   Y88P   "Y888888 
+  ____  ____     __         ___          
+ /_  / / __/__  / /__ _____/ _ \___ _  __
+  / /__\ \/ _ \/ / _ `/ __/ // / -_) |/ /
+ /___/___/\___/_/\_,_/_/ /____/\__/|___/ 
+
+Ver. {VERSION_PLACEHOLDER}
+
+Use "hx4diva help" for more commands.
+
+=========================================================================================================

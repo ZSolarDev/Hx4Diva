@@ -3,20 +3,20 @@ package diva.hooks;
 /**
  * The global hook manager, use via `Diva.hookManager`.
  * 
- * @since 1.0.0
+ * @since 1.0.0-alpha.1
  */
 class DHookManager {
 	/**
 	 * Hooks local to the mod, such as initialization, window resizing, etc.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public var modHooks:Map<String, Array<DModHook>>;
 
 	/**
 	 * Hooks specific to when you're inside of PV.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public var gameHooks:Map<String, Array<DGameHook>>;
 
@@ -24,7 +24,7 @@ class DHookManager {
 	 * Hooks specific to when you're inside of the PV select menu.
 	 * Future Tone UI only.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public var dftMenuHooks:Map<String, Array<DFTMenuHook>>;
 
@@ -32,14 +32,14 @@ class DHookManager {
 	 * Hooks specific to when you're inside of the PV select menu.
 	 * Mega Mix+ UI only.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public var menuHooks:Map<String, Array<DMenuHook>>;
 
 	/**
 	 * Creates a new hook manager.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	@:allow(diva.Diva) private function new() {
 		modHooks = [
@@ -84,7 +84,7 @@ class DHookManager {
 	/**
 	 * Registers a new `DModHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function registerModHook(hook:DModHook)
 		modHooks[Type.enumConstructor(hook)].push(hook);
@@ -92,7 +92,7 @@ class DHookManager {
 	/**
 	 * Unegisters a registered `DModHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function unregisterModHook(hook:DModHook)
 		modHooks[Type.enumConstructor(hook)].remove(hook);
@@ -100,7 +100,7 @@ class DHookManager {
 	/**
 	 * Registers a new `DGameHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function registerGameHook(hook:DGameHook)
 		gameHooks[Type.enumConstructor(hook)].push(hook);
@@ -108,7 +108,7 @@ class DHookManager {
 	/**
 	 * Unegisters a registered `DGameHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function unregisterGameHook(hook:DGameHook)
 		gameHooks[Type.enumConstructor(hook)].remove(hook);
@@ -116,7 +116,7 @@ class DHookManager {
 	/**
 	 * Registers a new `DFTMenuHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function registerDFTMenuHook(hook:DFTMenuHook)
 		dftMenuHooks[Type.enumConstructor(hook)].push(hook);
@@ -124,7 +124,7 @@ class DHookManager {
 	/**
 	 * Unegisters a registered `DFTMenuHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function unregisterDFTMenuHook(hook:DFTMenuHook)
 		dftMenuHooks[Type.enumConstructor(hook)].remove(hook);
@@ -132,7 +132,7 @@ class DHookManager {
 	/**
 	 * Registers a new `DMenuHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function registerMenuHook(hook:DMenuHook)
 		menuHooks[Type.enumConstructor(hook)].push(hook);
@@ -140,7 +140,7 @@ class DHookManager {
 	/**
 	 * Unegisters a registered `DMenuHook`.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.0-alpha.1
 	 */
 	public function unregisterMenuHook(hook:DMenuHook)
 		menuHooks[Type.enumConstructor(hook)].remove(hook);

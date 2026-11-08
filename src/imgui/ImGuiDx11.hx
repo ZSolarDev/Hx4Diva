@@ -1,11 +1,31 @@
 package imgui;
 
-import diva.Diva;
-import dxgi.interfaces.DxgiSwapChain;
 import d3d11.interfaces.D3d11Device;
 import d3d11.interfaces.D3d11DeviceContext;
+import diva.Diva;
+import dxgi.interfaces.DxgiSwapChain;
 import imgui.ImGui;
 
+/**
+ * The class you'd use to interact with ImGui. As such:
+ * 
+ * ```haxe
+ * Diva.hookManager.registerModhook(D3DInit((
+ *  swapChain:DxgiSwapChain,
+ *  device:D3d11Device,
+ *  deviceContext:D3d11DeviceContext) -> {
+ *　　ImGuiDx11.init(swapChain, device, deviceContext);
+ * }));
+ * 
+ * Diva.hookManager.registerModhook(OnFrame((_) -> {
+ *   ImGuiDx11.begin();
+ *   ImGui.showDemoWindow();
+ *   ImGuiDx11.end(swapChain);
+ * }));
+ * ```
+ * 
+ * @since 1.0.0-alpha.1
+ */
 @:buildXml('
 <set name="IMGUI_BACKENDS" value="${LINC_IMGUI_PATH}lib/cimgui/imgui/backends" />
 <files id="haxe">
@@ -59,78 +79,96 @@ static LRESULT CALLBACK HookedWndProc(HWND h, UINT m, WPARAM w, LPARAM l) {
 }
 ')
 class ImGuiDx11 {
-    static var initialized:Bool = false;
-    static var failed:Bool = false;
-    static var hooked:Bool = false;
+	static var initialized:Bool = false;
+	static var failed:Bool = false;
+	static var hooked:Bool = false;
+	static var swapChainHook = OnSwapChain((swapChain:DxgiSwapChain) -> {
+		ImGuiDx11.destroy(true);
+		ImGuiDx11.init(swapChain, Diva.curDevice, Diva.curDeviceContext);
+	});
 
-    public static function init(sc:DxgiSwapChain, dev:D3d11Device, ctx:D3d11DeviceContext) {
-        if (initialized || failed)
-            return;
+	/**
+	 * Initializes ImGui.
+	 * 
+	 * @since 1.0.0-alpha.1
+	 */
+	public static function init(sc:DxgiSwapChain, dev:D3d11Device, ctx:D3d11DeviceContext) {
+		if (initialized || failed)
+			return;
 
-        var scNull:Bool = untyped __cpp__('({0}->ptr == nullptr)', sc);
-        var devNull:Bool = untyped __cpp__('({0}->ptr == nullptr)', dev);
-        var ctxNull:Bool = untyped __cpp__('({0}->ptr == nullptr)', ctx);
-        if (scNull || devNull || ctxNull) {
-            failed = true;
-            return;
-        }
+		var scNull:Bool = untyped __cpp__('({0}->ptr == nullptr)', sc);
+		var devNull:Bool = untyped __cpp__('({0}->ptr == nullptr)', dev);
+		var ctxNull:Bool = untyped __cpp__('({0}->ptr == nullptr)', ctx);
+		if (scNull || devNull || ctxNull) {
+			failed = true;
+			return;
+		}
 
-        untyped __cpp__('
+		untyped __cpp__('
             g_dev = (ID3D11Device*){0}->ptr;
             g_ctx = (ID3D11DeviceContext*){1}->ptr;
             DXGI_SWAP_CHAIN_DESC d;
             ((IDXGISwapChain*){2}->ptr)->GetDesc(&d);
             g_hwnd = d.OutputWindow;
         ', dev, ctx, sc);
-        var hwndVal:Int = untyped __cpp__('(int)(size_t)g_hwnd');
-        if (hwndVal == 0) {
-            failed = true;
-            return;
-        }
+		var hwndVal:Int = untyped __cpp__('(int)(size_t)g_hwnd');
+		if (hwndVal == 0) {
+			failed = true;
+			return;
+		}
 
-        ImGui.createContext();
-        if (ImGui.getCurrentContext() == null) {
-            failed = true;
-            return;
-        }
+		ImGui.createContext();
+		if (ImGui.getCurrentContext() == null) {
+			failed = true;
+			return;
+		}
 
-        if (!(untyped __cpp__('ImGui_ImplWin32_Init(g_hwnd)'))) {
-            failed = true;
-            return;
-        }
+		if (!(untyped __cpp__('ImGui_ImplWin32_Init(g_hwnd)'))) {
+			failed = true;
+			return;
+		}
 
-        if (!(untyped __cpp__('ImGui_ImplDX11_Init(g_dev, g_ctx)'))) {
-            failed = true;
-            return;
-        }
+		if (!(untyped __cpp__('ImGui_ImplDX11_Init(g_dev, g_ctx)'))) {
+			failed = true;
+			return;
+		}
 
-        if (!hooked) {
-            Diva.hookManager.registerGameHook(OnSwapChain((swapChain:DxgiSwapChain)-> {
-                ImGuiDx11.destroy();
-                ImGuiDx11.init(swapChain, Diva.curDevice, Diva.curDeviceContext);
-            }));
-            untyped __cpp__('g_oldProc = (WNDPROC)SetWindowLongPtr(g_hwnd, GWLP_WNDPROC, (LONG_PTR)HookedWndProc)');
-            hooked = true;
-        }
-        initialized = true;
-    }
+		if (!hooked) {
+			Diva.hookManager.registerModHook(swapChainHook);
+			untyped __cpp__('g_oldProc = (WNDPROC)SetWindowLongPtr(g_hwnd, GWLP_WNDPROC, (LONG_PTR)HookedWndProc)');
+			hooked = true;
+		}
+		initialized = true;
+	}
 
-    public static function begin() {
-        if (!initialized) return;
+	/**
+	 * Begins a new ImGui frame.
+	 * 
+	 * @since 1.0.0-alpha.1
+	 */
+	public static function begin() {
+		if (!initialized)
+			return;
 
-        untyped __cpp__('
+		untyped __cpp__('
             ImGui_ImplDX11_NewFrame();
             ImGui_ImplWin32_NewFrame();
         ');
-        ImGui.newFrame();
-    }
+		ImGui.newFrame();
+	}
 
-    public static function end(sc:DxgiSwapChain) {
-        if (!initialized) return;
+	/**
+	 * Ends the current ImGui frame.
+	 * 
+	 * @since 1.0.0-alpha.1
+	 */
+	public static function end(sc:DxgiSwapChain) {
+		if (!initialized)
+			return;
 
-        ImGui.render();
-        
-        untyped __cpp__('
+		ImGui.render();
+
+		untyped __cpp__('
             ID3D11Texture2D* bb = nullptr;
             HRESULT r = ((IDXGISwapChain*){0}->ptr)->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
             g_tmpBB = bb;
@@ -146,15 +184,26 @@ class ImGuiDx11 {
             g_tmpRTV->Release();
             g_tmpRTV = nullptr;
         ', sc, ImGui.getDrawData());
-    }
+	}
 
-    public static function destroy() {
-        if (!initialized) return;
-        untyped __cpp__('
+	/**
+	 * Destroy's ImGui.
+	 * 
+	 * @param revive If `true`, it will regenerate itself once 
+	 * the swap chain is recreated. Used internally to work across
+	 * swap chains.
+	 * @since 1.0.0-alpha.1
+	 */
+	public static function destroy(?revive:Bool = false) {
+		if (!initialized)
+			return;
+		untyped __cpp__('
             ImGui_ImplDX11_Shutdown();
             ImGui_ImplWin32_Shutdown();
         ');
-        ImGui.destroyContext();
-        initialized = false;
-    }
+		ImGui.destroyContext();
+		initialized = false;
+		if (!revive)
+			Diva.hookManager.unregisterModHook(swapChainHook);
+	}
 }
