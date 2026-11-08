@@ -1,4 +1,4 @@
-package diva.types;
+package diva.types.display.spr;
 
 import cpp.UInt32;
 

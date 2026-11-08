@@ -14,11 +14,27 @@ class DHookManager {
 	public var modHooks:Map<String, Array<DModHook>>;
 
 	/**
-	 * Hooks specific to Project DIVA.
+	 * Hooks specific to when you're inside of PV.
 	 * 
 	 * @since 1.0.0
 	 */
 	public var gameHooks:Map<String, Array<DGameHook>>;
+
+	/**
+	 * Hooks specific to when you're inside of the PV select menu.
+	 * Future Tone UI only.
+	 * 
+	 * @since 1.0.0
+	 */
+	public var dftMenuHooks:Map<String, Array<DFTMenuHook>>;
+
+	/**
+	 * Hooks specific to when you're inside of the PV select menu.
+	 * Mega Mix+ UI only.
+	 * 
+	 * @since 1.0.0
+	 */
+	public var menuHooks:Map<String, Array<DMenuHook>>;
 
 	/**
 	 * Creates a new hook manager.
@@ -32,10 +48,10 @@ class DHookManager {
 			'PostInit' => [],
 			'D3DInit' => [],
 			'OnFrame' => [],
-			'OnResize' => []
+			'OnResize' => [],
+			'OnSwapChain' => []
 		];
 		gameHooks = [
-			'OnSwapChain' => [],
 			'OnPvInit' => [],
 			'OnPvInitComplete' => [],
 			'OnPvUpdate' => [],
@@ -43,7 +59,25 @@ class DHookManager {
 			'OnPvReset' => [],
 			'OnPvGetHitState' => [],
 			'OnLoadDscUpdate' => [],
-			'OnPvDBParseEntry' => []
+			'OnPvDBParseEntry' => [],
+			'OnDrawGame' => [],
+			'OnDrawGamePost' => [],
+			'OnUpdateTargets' => [],
+			'OnDrawKiseki' => []
+		];
+		dftMenuHooks = [
+			'OnMenuInit' => [],
+			'OnMenuCreateSortedPVList' => [],
+			'OnMenuUpdate' => [],
+			'OnMenuDraw' => [],
+			'OnMenuExit' => []
+		];
+		menuHooks = [
+			'OnMenuInit' => [],
+			'OnMenuCreateSortedPVList' => [],
+			'OnMenuUpdate' => [],
+			'OnMenuDraw' => [],
+			'OnMenuExit' => []
 		];
 	}
 
@@ -78,4 +112,36 @@ class DHookManager {
 	 */
 	public function unregisterGameHook(hook:DGameHook)
 		gameHooks[Type.enumConstructor(hook)].remove(hook);
+
+	/**
+	 * Registers a new `DFTMenuHook`.
+	 * 
+	 * @since 1.0.0
+	 */
+	public function registerDFTMenuHook(hook:DFTMenuHook)
+		dftMenuHooks[Type.enumConstructor(hook)].push(hook);
+
+	/**
+	 * Unegisters a registered `DFTMenuHook`.
+	 * 
+	 * @since 1.0.0
+	 */
+	public function unregisterDFTMenuHook(hook:DFTMenuHook)
+		dftMenuHooks[Type.enumConstructor(hook)].remove(hook);
+
+	/**
+	 * Registers a new `DMenuHook`.
+	 * 
+	 * @since 1.0.0
+	 */
+	public function registerMenuHook(hook:DMenuHook)
+		menuHooks[Type.enumConstructor(hook)].push(hook);
+
+	/**
+	 * Unegisters a registered `DMenuHook`.
+	 * 
+	 * @since 1.0.0
+	 */
+	public function unregisterMenuHook(hook:DMenuHook)
+		menuHooks[Type.enumConstructor(hook)].remove(hook);
 }

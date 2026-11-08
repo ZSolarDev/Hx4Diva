@@ -14,5 +14,5 @@ extern class PvDscTargetGroup {
 	@:native('slide_chain') var slideChain:Bool;
 
 	// Array, length is 4
-	@:native('::GroupTargetAt') public static function targetAt(targetGroup:PvDscTargetGroup, index:Int):Reference<PvDscTarget>;
+	@:native('::GroupTargetAt') static function targetAt(targetGroup:PvDscTargetGroup, index:Int):Reference<PvDscTarget>;
 }

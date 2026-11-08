@@ -6,7 +6,9 @@ import cpp.Float32;
 @:native('::diva::vec3')
 @:structAccess
 extern class Vec3 {
-    @:native('x') var x:Float32;
-    @:native('y') var y:Float32;
-    @:native('z') var z:Float32;
+	var x:Float32;
+	var y:Float32;
+	var z:Float32;
+
+	function new(x:Float32, y:Float32, z:Float32);
 }

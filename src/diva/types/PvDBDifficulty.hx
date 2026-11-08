@@ -1,9 +1,7 @@
 package diva.types;
 
-import cpp.Float32;
 import cpp.Int32;
 import cpp.Int64;
-import cpp.StdString;
 
 @:include('diva_types.h')
 @:native('::pv_db::PvDBDifficulty')

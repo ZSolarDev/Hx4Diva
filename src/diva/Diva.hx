@@ -1,5 +1,6 @@
 package diva;
 
+import cpp.Float32;
 import cpp.Pointer;
 import cpp.Reference;
 import cpp.Star;
@@ -10,8 +11,10 @@ import d3d11.interfaces.D3d11Device;
 import d3d11.interfaces.D3d11DeviceContext.NativeID3D11DeviceContext;
 import d3d11.interfaces.D3d11DeviceContext;
 import diva.hooks.*;
+import diva.task.*;
 import diva.types.*;
 import diva.types.hooktypes.*;
+import diva.types.menu.*;
 import dxgi.interfaces.DxgiSwapChain.NativeIDXGISwapChain;
 import dxgi.interfaces.DxgiSwapChain;
 import haxe.Json;
@@ -34,6 +37,8 @@ import haxe.Resource;
 // diva_types.h and my package, but hxcpp has special naming conventions
 // internally, so it shouldn't be an issue.
 @:cppFileCode('
+#include <cstdio>
+// Mod hooks
 extern "C" __declspec(dllexport) void PreInit() {
     ::diva::Diva_obj::preInit();
 }
@@ -85,6 +90,77 @@ extern "C" __declspec(dllexport) void OnLoadDscUpdate(PVGamePvData* data, pv_db:
 extern "C" __declspec(dllexport) void OnPvDBParseEntry(pv_db::PvDBEntry* entry, bool* result) {
     ::diva::Diva_obj::onPvDBParseEntry(entry, result);
 }
+
+extern "C" __declspec(dllexport) void OnDrawGame(PVGameArcade* game) {
+    ::diva::Diva_obj::onDrawGame(game);
+}
+
+extern "C" __declspec(dllexport) void OnDrawGamePost(PVGameArcade* game) {
+    ::diva::Diva_obj::onDrawGamePost(game);
+}
+
+extern "C" __declspec(dllexport) void OnUpdateTargets(PVGameArcade* game, float dt) {
+    ::diva::Diva_obj::onUpdateTargets(game, dt);
+}
+
+extern "C" __declspec(dllexport) void OnDrawKiseki(PvGameTarget* target) {
+    ::diva::Diva_obj::onDrawKiseki(target);
+}
+
+// FT PV selection menu hooks
+extern "C" __declspec(dllexport) void OnPvMenuInitFT(PVselPS4* sel, bool* result) {
+    ::diva::Diva_obj::onPvMenuInitFT(sel, result);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuCreateSortedPVListFT(PVselPS4* sel) {
+    ::diva::Diva_obj::onPvMenuCreateSortedPVListFT(sel);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuCtrlFT(PVselPS4* sel, bool* result) {
+    ::diva::Diva_obj::onPvMenuCtrlFT(sel, result);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuDestFT(bool* result) {
+    ::diva::Diva_obj::onPvMenuDestFT(result);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuDispFT() {
+    ::diva::Diva_obj::onPvMenuDispFT();
+}
+
+// MM+ PV selection menu hooks
+extern "C" __declspec(dllexport) void OnPvMenuInit(bool* result) {
+    ::diva::Diva_obj::onPvMenuInit(result);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuCreateSortedPVList(PVSelectorSwitch* sel, bool* result) {
+    ::diva::Diva_obj::onPvMenuCreateSortedPVList(sel, result);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuCtrl(PVSelectorSwitch* sel, bool* result) {
+    ::diva::Diva_obj::onPvMenuCtrl(sel, result);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuDest(bool* result) {
+    ::diva::Diva_obj::onPvMenuDest(result);
+}
+
+extern "C" __declspec(dllexport) void OnPvMenuDisp() {
+    ::diva::Diva_obj::onPvMenuDisp();
+}
+
+// Tasks
+extern "C" __declspec(dllexport) void OnHxTaskCtrl() {
+    ::diva::Diva_obj::onHxTaskCtrl();
+}
+
+extern "C" __declspec(dllexport) void OnHxTaskDisp() {
+    ::diva::Diva_obj::onHxTaskDisp();
+}
+
+extern "C" __declspec(dllexport) void OnHxTaskBasic() {
+    ::diva::Diva_obj::onHxTaskBasic();
+}
 ')
 class Diva {
 	/**
@@ -132,6 +208,8 @@ class Diva {
 	 */
 	public static var hookManager:DHookManager;
 
+	public static var taskManager:DTaskManager;
+
 	/**
 	 * Initializes the mod.
 	 * 
@@ -149,6 +227,7 @@ class Diva {
 			modVersion = modData.version ?? modVersion;
 		}
 		hookManager = new DHookManager();
+		taskManager = new DTaskManager();
 	}
 
 	/**
@@ -160,6 +239,7 @@ class Diva {
 	public static function toString(rawStr:RawStdString):String
 		return rawStr.c_str().toString();
 
+	// --------- MOD HOOKS --------- //
 	static function preInit()
 		for (hook in hookManager.modHooks['PreInit'].copy())
 			runModHook(hook);
@@ -178,15 +258,15 @@ class Diva {
 		curDeviceContext = wrapDeviceContext(rawDeviceContext);
 		for (hook in hookManager.modHooks['D3DInit'].copy())
 			runModHook(hook, curSwapChain, curDevice, curDeviceContext);
-		for (hook in hookManager.gameHooks['OnSwapChain'].copy())
-			runGameHook(hook, curSwapChain);
+		for (hook in hookManager.modHooks['OnSwapChain'].copy())
+			runModHook(hook, curSwapChain);
 	}
 
 	static function onFrame(rawSwapChain:Star<NativeIDXGISwapChain>) {
 		if (rawSwapChain != curSwapChain.ptr) {
 			curSwapChain = wrapSwapChain(rawSwapChain);
-			for (hook in hookManager.gameHooks['OnSwapChain'].copy())
-				runGameHook(hook, curSwapChain);
+			for (hook in hookManager.modHooks['OnSwapChain'].copy())
+				runModHook(hook, curSwapChain);
 		}
 		for (hook in hookManager.modHooks['OnFrame'].copy())
 			runModHook(hook, curSwapChain);
@@ -195,8 +275,8 @@ class Diva {
 	static function onResize(rawSwapChain:Star<NativeIDXGISwapChain>) {
 		if (rawSwapChain != curSwapChain.ptr) {
 			curSwapChain = wrapSwapChain(rawSwapChain);
-			for (hook in hookManager.gameHooks['OnSwapChain'].copy())
-				runGameHook(hook, curSwapChain);
+			for (hook in hookManager.modHooks['OnSwapChain'].copy())
+				runModHook(hook, curSwapChain);
 		}
 		for (hook in hookManager.modHooks['OnResize'].copy())
 			runModHook(hook, curSwapChain);
@@ -223,18 +303,17 @@ class Diva {
 		for (hook in hookManager.gameHooks['OnPvReset'].copy())
 			runGameHook(hook);
 
-	static var hitCtx:HitContext = new HitContext();
-
 	static function onPvGetHitState(game:Star<PVGameArcade>, target:Star<PvGameTarget>, result:Pointer<HitState>) {
+		var hitCtx:HitContext = new HitContext();
 		hitCtx.game = Pointer.fromStar(game);
 		hitCtx.target = Pointer.fromStar(target);
 		hitCtx.result = result.ref;
 
 		for (hook in hookManager.gameHooks['OnPvGetHitState'].copy()) {
 			switch (hook) {
-				case OnPvGetHitState(cb):
+				case OnPvGetHitState(onPvGetHitState):
 					try {
-						cb(hitCtx);
+						onPvGetHitState(hitCtx);
 					} catch (e) {
 						DLogger.error('Uncaught error during OnPvGetHitState game hook: ${e.message}\nStack:\n${e.stack.toString()}');
 					}
@@ -245,9 +324,8 @@ class Diva {
 		result.ref = hitCtx.result;
 	}
 
-	static var dscCtrlCtx:DscCtrlContext = new DscCtrlContext();
-
 	static function onLoadDscUpdate(data:Star<PVGamePvData>, entry:Star<PvDBEntry>, difficulty:Star<PvDBDifficulty>, path:RawStdString, result:Pointer<Bool>) {
+		var dscCtrlCtx:DscCtrlContext = new DscCtrlContext();
 		dscCtrlCtx.data = Pointer.fromStar(data);
 		dscCtrlCtx.entry = entry != null ? Pointer.fromStar(entry) : null;
 		dscCtrlCtx.difficulty = difficulty != null ? Pointer.fromStar(difficulty) : null;
@@ -256,9 +334,9 @@ class Diva {
 
 		for (hook in hookManager.gameHooks['OnLoadDscUpdate'].copy()) {
 			switch (hook) {
-				case OnLoadDscUpdate(cb):
+				case OnLoadDscUpdate(onLoadDscUpdate):
 					try {
-						cb(dscCtrlCtx);
+						onLoadDscUpdate(dscCtrlCtx);
 					} catch (e) {
 						DLogger.error('Uncaught error during OnLoadDscUpdate game hook: ${e.message}\nStack:\n${e.stack.toString()}');
 					}
@@ -269,17 +347,16 @@ class Diva {
 		result.ref = dscCtrlCtx.result;
 	}
 
-	static var pvdbParseCtx:PvDBParseContext = new PvDBParseContext();
-
 	static function onPvDBParseEntry(entry:Star<PvDBEntry>, result:Pointer<Bool>) {
+		var pvdbParseCtx = new PvDBParseContext();
 		pvdbParseCtx.entry = Pointer.fromStar(entry);
 		pvdbParseCtx.result = result.ref;
 
 		for (hook in hookManager.gameHooks['OnPvDBParseEntry'].copy()) {
 			switch (hook) {
-				case OnPvDBParseEntry(cb):
+				case OnPvDBParseEntry(onPvDBParseEntry):
 					try {
-						cb(pvdbParseCtx);
+						onPvDBParseEntry(pvdbParseCtx);
 					} catch (e) {
 						DLogger.error('Uncaught error during OnPvDBParseEntry game hook: ${e.message}\nStack:\n${e.stack.toString()}');
 					}
@@ -288,6 +365,265 @@ class Diva {
 		}
 
 		result.ref = pvdbParseCtx.result;
+	}
+
+	static function onDrawGame(game:Star<PVGameArcade>) {
+		var drawCtx:DrawContext = new DrawContext();
+		drawCtx.game = game;
+		for (hook in hookManager.gameHooks['OnDrawGame'].copy()) {
+			switch (hook) {
+				case OnDrawGame(onDrawGame):
+					try {
+						onDrawGame(drawCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnDrawGame game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+	}
+
+	static function onDrawGamePost(game:Star<PVGameArcade>) {
+		var drawCtx:DrawContext = new DrawContext();
+		drawCtx.game = game;
+		for (hook in hookManager.gameHooks['OnDrawGamePost'].copy()) {
+			switch (hook) {
+				case OnDrawGamePost(onDrawGamePost):
+					try {
+						onDrawGamePost(drawCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnDrawGamePost game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+	}
+
+	static function onUpdateTargets(game:Star<PVGameArcade>, dt:Float32) {
+		var targetUpdateCtx:TargetUpdateContext = new TargetUpdateContext();
+		targetUpdateCtx.game = game;
+		targetUpdateCtx.dt = dt;
+		for (hook in hookManager.gameHooks['OnUpdateTargets'].copy()) {
+			switch (hook) {
+				case OnUpdateTargets(onUpdateTargets):
+					try {
+						onUpdateTargets(targetUpdateCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnUpdateTargets game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+	}
+
+	static function onDrawKiseki(game:Star<PvGameTarget>) {
+		var targetCtx:TargetContext = new TargetContext();
+		targetCtx.game = game;
+		for (hook in hookManager.gameHooks['OnDrawKiseki'].copy()) {
+			switch (hook) {
+				case OnDrawKiseki(onDrawKiseki):
+					try {
+						onDrawKiseki(targetCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnDrawKiseki game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+	}
+
+	// --------- FT PV SELECTION MENU HOOKS --------- //
+	static function onPvMenuInitFT(sel:Star<PVselPS4>, result:Pointer<Bool>) {
+		var menuSelCtx:FTMenuSelectionContext = new FTMenuSelectionContext();
+		menuSelCtx.selection = sel;
+		menuSelCtx.result = result.ref;
+		for (hook in hookManager.dftMenuHooks['OnMenuInit'].copy()) {
+			switch (hook) {
+				case OnMenuInit(onMenuInit):
+					try {
+						onMenuInit(menuSelCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuInit[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+		result.ref = menuSelCtx.result;
+	}
+
+	static function onPvMenuCreateSortedPVListFT(sel:Star<PVselPS4>) {
+		var basicMenuSelCtx:BasicFTMenuSelectionContext = new BasicFTMenuSelectionContext();
+		basicMenuSelCtx.selection = sel;
+		for (hook in hookManager.dftMenuHooks['OnMenuCreateSortedPVList'].copy()) {
+			switch (hook) {
+				case OnMenuCreateSortedPVList(onMenuCreateSortedPVList):
+					try {
+						onMenuCreateSortedPVList(basicMenuSelCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuCreateSortedPVList[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+	}
+
+	static function onPvMenuCtrlFT(sel:Star<PVselPS4>, result:Pointer<Bool>) {
+		var menuSelCtx:FTMenuSelectionContext = new FTMenuSelectionContext();
+		menuSelCtx.selection = sel;
+		menuSelCtx.result = result.ref;
+		for (hook in hookManager.dftMenuHooks['OnMenuUpdate'].copy()) {
+			switch (hook) {
+				case OnMenuUpdate(onMenuUpdate):
+					try {
+						onMenuUpdate(menuSelCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuUpdate[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+		result.ref = menuSelCtx.result;
+	}
+
+	static function onPvMenuDispFT() {
+		for (hook in hookManager.dftMenuHooks['OnMenuDraw'].copy()) {
+			switch (hook) {
+				case OnMenuDraw(onMenuDraw):
+					try {
+						onMenuDraw();
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuDraw[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+	}
+
+	static function onPvMenuDestFT(result:Pointer<Bool>) {
+		var resCtx:ResultContext = new ResultContext();
+		resCtx.result = result.ref;
+		for (hook in hookManager.dftMenuHooks['OnMenuExit'].copy()) {
+			switch (hook) {
+				case OnMenuExit(onMenuExit):
+					try {
+						onMenuExit(resCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuExit[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+		result.ref = resCtx.result;
+	}
+
+	// --------- MM+ PV SELECTION MENU HOOKS --------- //
+	static function onPvMenuInit(result:Pointer<Bool>) {
+		var resCtx:ResultContext = new ResultContext();
+		resCtx.result = result.ref;
+		for (hook in hookManager.menuHooks['OnMenuInit'].copy()) {
+			switch (hook) {
+				case OnMenuInit(onMenuInit):
+					try {
+						onMenuInit(resCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuInit menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+		result.ref = resCtx.result;
+	}
+
+	static function onPvMenuCreateSortedPVList(sel:Star<PVSelectorSwitch>, result:Pointer<Bool>) {
+		var menuSelCtx:MenuSelectionContext = new MenuSelectionContext();
+		menuSelCtx.selection = sel;
+		menuSelCtx.result = result.ref;
+		for (hook in hookManager.menuHooks['OnMenuCreateSortedPVList'].copy()) {
+			switch (hook) {
+				case OnMenuCreateSortedPVList(onMenuCreateSortedPVList):
+					try {
+						onMenuCreateSortedPVList(menuSelCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuCreateSortedPVList menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+		result.ref = menuSelCtx.result;
+	}
+
+	static function onPvMenuCtrl(sel:Star<PVSelectorSwitch>, result:Pointer<Bool>) {
+		var menuSelCtx:MenuSelectionContext = new MenuSelectionContext();
+		menuSelCtx.selection = sel;
+		menuSelCtx.result = result.ref;
+		for (hook in hookManager.menuHooks['OnMenuUpdate'].copy()) {
+			switch (hook) {
+				case OnMenuUpdate(onMenuUpdate):
+					try {
+						onMenuUpdate(menuSelCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuUpdate menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+		result.ref = menuSelCtx.result;
+	}
+
+	static function onPvMenuDest(result:Pointer<Bool>) {
+		var resCtx:ResultContext = new ResultContext();
+		resCtx.result = result.ref;
+		for (hook in hookManager.menuHooks['OnMenuExit'].copy()) {
+			switch (hook) {
+				case OnMenuExit(onMenuExit):
+					try {
+						onMenuExit(resCtx);
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuExit menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+		result.ref = resCtx.result;
+	}
+
+	static function onPvMenuDisp() {
+		for (hook in hookManager.menuHooks['OnMenuDraw'].copy()) {
+			switch (hook) {
+				case OnMenuDraw(onMenuDraw):
+					try {
+						onMenuDraw();
+					} catch (e) {
+						DLogger.error('Uncaught error during OnMenuDraw menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+					}
+				default:
+			}
+		}
+	}
+
+	// ------------ TASKS ------------ //
+	static function onHxTaskCtrl() {
+		try {
+			taskManager.update();
+		} catch (e) {
+			DLogger.error('Uncaught error during task update: ${e.message}\nStack:\n${e.stack.toString()}');
+		}
+	}
+
+	static function onHxTaskDisp() {
+		try {
+			taskManager.draw();
+		} catch (e) {
+			DLogger.error('Uncaught error during task draw: ${e.message}\nStack:\n${e.stack.toString()}');
+		}
+	}
+
+	static function onHxTaskBasic() {
+		try {
+			taskManager.basic();
+		} catch (e) {
+			DLogger.error('Uncaught error during task basic: ${e.message}\nStack:\n${e.stack.toString()}');
+		}
 	}
 
 	// --------- UTILS --------- //
@@ -325,6 +661,8 @@ class Diva {
 					onFrameHook(argList[0]);
 				case OnResize(onResizeHook):
 					onResizeHook(argList[0]);
+				case OnSwapChain(onSwapChain):
+					onSwapChain(argList[0]);
 			}
 		} catch (e) {
 			DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} mod hook: ${e.message}\nStack:\n${e.stack.toString()}');
@@ -335,8 +673,6 @@ class Diva {
 		try {
 			var argList = args.toArray();
 			switch (hook) {
-				case OnSwapChain(onSwapChain):
-					onSwapChain(argList[0]);
 				case OnPvInit(onPvInitHook):
 					onPvInitHook();
 				case OnPvInitComplete(onPvInitCompleteHook):

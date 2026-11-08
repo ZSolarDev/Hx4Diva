@@ -8,6 +8,15 @@
 #include <list>
 #include <stdint.h>
 #include <type_traits>
+#include <windows.h>
+
+#define _CONCAT2(x, y) x##y
+#define CONCAT2(x, y) _CONCAT(x, y)
+#define INSERT_PADDING(length) \
+    uint8_t CONCAT2(pad, __LINE__)[length]
+
+#define FUNCTION_PTR(returnType, callingConvention, function, location, ...) \
+    returnType (callingConvention *function)(__VA_ARGS__) = (returnType(callingConvention*)(__VA_ARGS__))(location)
 
 // TODO: Re-organize this file completely. I think some stuff here could be moved into
 //       other files and maybe centralize all the addresses on a single place so that
@@ -16,10 +25,11 @@
 
 namespace prj
 {
+    inline FUNCTION_PTR(void*, __fastcall, operatorNew, 0x1409777D0, size_t);
+    inline FUNCTION_PTR(void*, __fastcall, operatorDelete, 0x1409B1E90, void*);
 	// FROM: https://github.com/blueskythlikesclouds/DivaModLoader/blob/master/Source/DivaModLoader/Allocator.h
 	//       https://github.com/blueskythlikesclouds/DivaModLoader/blob/master/Source/DivaModLoader/Types.h
 	//
-    void* operatorNew(size_t); void operatorDelete(void*);
 
 	template <class T>
 	class Allocator
@@ -188,7 +198,82 @@ namespace diva
 
 		vec2() { x = 0.0f; y = 0.0f; }
 		vec2(float x, float y) { this->x = x; this->y = y; }
-	};
+	
+        inline float length() const { return sqrtf(x * x + y * y); }
+        inline vec2 abs() const { return vec2(fabsf(x), fabsf(y)); }
+
+        inline vec2 operator+(const vec2& right) const
+        {
+        	return { this->x + right.x, this->y + right.y };
+        }
+
+        inline vec2& operator+=(const vec2& right)
+        {
+        	this->x += right.x;
+        	this->y += right.y;
+        	return *this;
+        }
+
+        inline vec2 operator-() const
+        {
+        	return { -this->x, -this->y };
+        }
+
+        inline vec2 operator-(const vec2& right) const
+        {
+        	return { this->x - right.x, this->y - right.y };
+        }
+
+        inline vec2 operator*(float scalar) const
+        {
+        	return { this->x * scalar, this->y * scalar };
+        }
+
+        inline vec2 operator*(const vec2& right) const
+        {
+        	return { this->x * right.x, this->y * right.y };
+        }
+
+        inline vec2 operator/(float scalar) const
+        {
+        	return { this->x / scalar, this->y / scalar };
+        }
+
+        inline vec2 operator/(const vec2& right) const
+        {
+        	return { this->x / right.x, this->y / right.y };
+        }
+
+        inline bool operator>(const vec2& right) const
+        {
+        	return x > right.x && y > right.y;
+        }
+
+        inline bool operator>=(const vec2& right) const
+        {
+        	return x >= right.x && y >= right.y;
+        }
+
+        inline bool operator<(const vec2& right) const
+        {
+        	return x < right.x && y < right.y;
+        }
+
+        inline bool operator<=(const vec2& right) const
+        {
+        	return x <= right.x && y <= right.y;
+        }
+
+        inline vec2 rotated(float angle)
+        {
+        	float c = cosf(angle);
+        	float s = sinf(angle);
+        	return {
+        		this->x * c - this->y * s,
+        		this->x * s - this->y * c
+        	};
+        }
+    };
 
 	struct vec3
 	{
@@ -236,6 +321,22 @@ namespace diva
 		float y;
 		float z;
 		float w;
+
+        vec4()
+        {
+            this->x = 0.0f;
+            this->y = 0.0f;
+            this->z = 0.0f;
+            this->w = 0.0f;
+        }
+
+	    vec4(float x, float y, float z, float w)
+        {
+            this->x = x;
+            this->y = y;
+            this->z = z;
+            this->w = w;
+        }
 	};
 
 	struct mat4
@@ -244,6 +345,30 @@ namespace diva
 		vec4 row1;
 		vec4 row2;
 		vec4 row3;
+
+        mat4()
+        {
+            this->row0 = { 1.0f, 0.0f, 0.0f, 0.0f };
+            this->row1 = { 0.0f, 1.0f, 0.0f, 0.0f };
+            this->row2 = { 0.0f, 0.0f, 1.0f, 0.0f };
+            this->row3 = { 0.0f, 0.0f, 0.0f, 1.0f };
+        }
+        
+	    mat4(vec4 row0, vec4 row1, vec4 row2, vec4 row3)
+        {
+            this->row0 = row0;
+            this->row1 = row1;
+            this->row2 = row2;
+            this->row3 = row3;
+        }
+
+        inline diva::vec3 GetScale() const
+        {
+        	// NOTE: Only works for 2D transformations
+        	float v = sqrtf(powf(row0.x, 2.0f) + powf(row1.x, 2.0f));
+        	float t = acosf(row0.x / v);
+        	return { t, t, 1.0f };
+        }
 	};
 
 	struct Rect
@@ -254,9 +379,6 @@ namespace diva
 		float height;
 	};
 }
-
-inline diva::vec2 MakeVec2(float x, float y) { return diva::vec2(x, y); }
-inline diva::vec3 MakeVec3(float x, float y, float z) { return diva::vec3(x, y, z); }
 
 struct SpriteVertex
 {
@@ -301,7 +423,12 @@ struct SprArgs
 	diva::vec2 texture_size;
 	SprArgs* next;
 	void* tex;
+
+    SprArgs();
 };
+
+inline SprArgs& SprArgNext(SprArgs& s) { return *s.next; }
+inline bool HasSprArgsNext(const SprArgs& s) { return s.next != nullptr; }
 
 struct FontInfo
 {
@@ -316,6 +443,13 @@ struct FontInfo
 	diva::vec2 size;
 	diva::vec2 scale;
 	diva::vec2 spacing;
+
+    FontInfo();
+    ~FontInfo() = default;
+
+    static FontInfo CreateSpriteFont(int32_t sprite_id, int32_t width, int32_t height);
+
+    void SetSize(float width, float height);
 };
 
 enum TextFlags : int32_t
@@ -350,6 +484,19 @@ struct PrintWork
 	FontInfo* font;
 	uint16_t empty_char;
 	int8_t gap4E[2];
+
+    inline void SetColor(uint32_t color, uint32_t fill)
+    {
+    	color = color;
+    	fill_color = fill;
+    }
+
+    inline void SetOpacity(float opacity)
+    {
+    	int32_t a = (opacity < 0.0f ? 0.0f : opacity > 1.0f ? 1.0f : opacity) * 255;
+    	color = (color & 0xFFFFFF) | (a << 24);
+    	fill_color = (fill_color & 0xFFFFFF) | (a << 24);
+    }
 };
 
 // TODO: Clean-up this struct. I think the struct might be actually smaller than this.
@@ -365,6 +512,8 @@ struct TextArgs
 	uint32_t unk74;
 	uint32_t unk78;
 	uint32_t unk7C;
+
+    TextArgs();
 };
 #pragma pack(pop)
 
@@ -414,6 +563,10 @@ struct AetArgs
 	int32_t id = 0;
 	int32_t dword164 = 0;
 	diva::vec3 pos_2 = { 0.0f, 0.0f, 0.0f };
+
+    AetArgs() = default;
+    AetArgs(uint32_t scene, const char* layer, int32_t prio, int32_t marker_mode);
+    ~AetArgs() = default;
 };
 
 struct AetLayout
@@ -421,18 +574,18 @@ struct AetLayout
 	diva::mat4 matrix;
 	diva::vec3 position;
 	diva::vec3 anchor;
-	float width;
-	float height;
-	float opacity;
-	uint32_t color;
-	int32_t resolution_mode;
-	uint32_t unk6C;
-	int32_t unk70;
-	uint8_t blendMode;
-	uint8_t transferFlags;
-	uint8_t trackMatte;
-	int32_t unk78;
-	int32_t unk7C;
+	float width = 0.0f;
+	float height = 0.0f;
+	float opacity = 0.0f;
+	uint32_t color = 0;
+	int32_t resolution_mode = 0;
+	uint32_t unk6C = 0;
+	int32_t unk70 = 0;
+	uint8_t blendMode = 0;
+	uint8_t transferFlags = 0;
+	uint8_t trackMatte = 0;
+	int32_t unk78 = 0;
+	int32_t unk7C = 0;
 };
 
 using AetComposition = prj::map<prj::string, AetLayout>;
@@ -658,6 +811,10 @@ struct PVGameArcade
 	uint8_t gap13540[14];
 	int8_t char1354E[4];
 	float fl13554[2];
+
+    void EraseTarget(PvGameTarget* target);
+    void RemoveTargetAet(PvGameTarget* target);
+    void PlayHitEffect(int32_t index, const diva::vec2& pos);
 };
 
 inline PvGameTarget& ArcadeTargetAt(PVGameArcade& a, int i) { return a.target_buffer[i]; }
@@ -689,6 +846,9 @@ struct PVGameUI
 	int32_t combo_num;
 	int32_t int3C0;
 	diva::vec2 combo_counter_pos;
+
+    void SetBonusText(int32_t value, const diva::vec2& pos);
+    void RemoveBonusText();
 };
 
 struct PVGameData
@@ -872,20 +1032,195 @@ enum GameLocale : int32_t
 namespace diva
 {
 	struct InputState
-	{
-		uint8_t _data[6720];
+    {
+    	uint8_t _data[6720];
 
-		// 0x08 - Cursor position X (1920x1080)
-		// 0x09 - Cursor position Y (1920x1080)
-		// 0x10 - Cursor position X (1280x720)
-		// 0x11 - Cursor position Y (1280x720)
-		// 0x12 - Cursor pos delta X
-		// 0x13 - Cursor pos delta Y
-		// 0x14 - LStick X axis
-		// 0x15 - LStick Y axis
-		// 0x16 - RStick X axis
-		// 0x17 - RStick Y axis
-	};
+    	// 0x08 - Cursor position X (1920x1080)
+    	// 0x09 - Cursor position Y (1920x1080)
+    	// 0x10 - Cursor position X (1280x720)
+    	// 0x11 - Cursor position Y (1280x720)
+    	// 0x12 - Cursor pos delta X
+    	// 0x13 - Cursor pos delta Y
+    	// 0x14 - LStick X axis
+    	// 0x15 - LStick Y axis
+    	// 0x16 - RStick X axis
+    	// 0x17 - RStick Y axis
+    	float GetPosition(int32_t index);
+    	int32_t GetDevice();
+    	bool IsButtonDown(int32_t key);
+    	bool IsButtonTapped(int32_t key);
+    	bool IsButtonTappedAbs(int32_t key);
+    	bool IsButtonTappedOrRepeat(int32_t key);
+    	inline bool IsInputBlocked() { return *reinterpret_cast<bool*>(&_data[0x1A28]); }
+    };
+
+    inline FUNCTION_PTR(InputState*, __fastcall, GetInputState, 0x1402AC970, int32_t index);
+    inline FUNCTION_PTR(bool, __fastcall, CheckButtonDelegate, 0x1402AB1A0,
+    	InputState* state, int32_t key, bool(__fastcall* func)(InputState*, int32_t));
+}
+
+
+namespace aet
+{
+	// NOTE: Queues AetSet file to be loaded
+	inline FUNCTION_PTR(void, __fastcall, LoadAetSet, 0x1402C9FA0, uint32_t id, prj::string* out);
+	// NOTE: Returns true if AetSet file is still loading, false otherwise
+	inline FUNCTION_PTR(bool, __fastcall, CheckAetSetLoading, 0x1402CA020, uint32_t id);
+	// NOTE: Free AetSet file from memory
+	inline FUNCTION_PTR(void, __fastcall, UnloadAetSet, 0x1402CA040, uint32_t id);
+	// NOTE: Plays an Aet layer described by the `args` variable passed in.
+	inline FUNCTION_PTR(int32_t, __fastcall, Play, 0x1402CA220, AetArgs* args, int32_t id);
+	// NOTE: Returns the current from on an Aet object.
+	inline FUNCTION_PTR(float, __fastcall, GetFrame, 0x1402CA500, int32_t id);
+	// NOTE: Returns whether an Aet object has ended playback. Will always return false if the loop flag is set.
+	inline FUNCTION_PTR(bool, __fastcall, GetEnded, 0x1402CA510, int32_t id);
+	// NOTE: Retrieves layout data for specific Aet object ID.
+	inline FUNCTION_PTR(void, __fastcall, GetComposition, 0x1402CA670, AetComposition* comp, int32_t id);
+	// NOTE: Returns the time where the specified marker is placed on a layer
+	inline FUNCTION_PTR(float, __fastcall, GetMarkerTime, 0x1402CA170, uint32_t id, const char* layer, const char* marker);
+
+	// NOTE: Plays a layer from AET_GAM_CMN. Resolution mode is HDTV720
+	inline FUNCTION_PTR(int32_t, __fastcall, PlayGamCmnLayer, 0x14027B2C0, int32_t prio, void* a2, const char* layer, const diva::vec2* pos);
+
+	// NOTE: Sets the position of the layer object
+	inline FUNCTION_PTR(void, __fastcall, SetPosition, 0x1402CA3F0, int32_t id, const diva::vec3* pos);
+	// NOTE: Sets the scale of the layer object
+	inline FUNCTION_PTR(void, __fastcall, SetScale, 0x1402CA400, int32_t id, const diva::vec3* scale);
+	// NOTE: Sets the current frame of the layer objects
+	inline FUNCTION_PTR(void, __fastcall, SetFrame, 0x1402CA4B0, int32_t id, float frame);
+	// NOTE: Sets if the layer object should play (1) or pause (0)
+	inline FUNCTION_PTR(void, __fastcall, SetPlay, 0x1402CA380, int32_t id, bool play);
+	inline FUNCTION_PTR(void, __fastcall, SetVisible, 0x1402CA390, int32_t id, bool visible);
+	inline FUNCTION_PTR(void, __fastcall, SetOpacity, 0x1402CA420, int32_t id, float opacity);
+
+    inline FUNCTION_PTR(AetSetInfo*, __fastcall, GetAetSetInfoByName, 0x140294490, void* a1, const prj::string_range& name);
+    inline FUNCTION_PTR(AetSceneInfo*, __fastcall, GetAetSceneInfoByName, 0x140294610, void* a1, const prj::string_range& name);
+
+	void CreateAetArgs(AetArgs* args, uint32_t scene_id, const char* layer_name, int32_t prio);
+	void CreateAetArgs(AetArgs* args, uint32_t scene_id, const char* layer_name, int32_t flags, int32_t layer, int32_t prio, const char* start_marker, const char* end_marker);
+
+	// NOTE: Stops (removes, not pause!) an Aet layer object created by `diva::aet::Play`
+	void Stop(int32_t id);
+	// NOTE: Same as the normal one, but sets id to 0 afterwards
+	void Stop(int32_t* id);
+	// NOTE: Stops if GetEnded() returns true and returns the value of GetEnded().
+	bool StopOnEnded(int32_t* id);
+
+	int32_t PlayLayer(uint32_t scene_id, int32_t prio, int32_t flags, const char* layer, const diva::vec2* pos, int32_t index, const char* start_marker, const char* end_marker, float start_time, float end_time, int32_t a11, void* frmctl);
+	int32_t PlayLayer(uint32_t scene, int32_t prio, int32_t flags, const char* layer, const diva::vec2* pos, const char* start_marker, const char* end_marker);
+
+	int32_t PlayLayer(uint32_t scene_id, int32_t prio, const char* layer, int32_t action);
+
+    inline bool GetLayout(int32_t handle, const char* layer_name, AetLayout* out)
+    {
+    	if (handle == 0 || out == nullptr)
+    		return false;
+
+    	AetComposition comp;
+    	aet::GetComposition(&comp, handle);
+
+    	auto it = comp.find(prj::string(layer_name));
+    	if (it == comp.end())
+    		return false;
+
+    	*out = it->second;
+    	return true;
+    }
+
+    inline AetSceneInfo* FindAetScene(const char* name)
+    {
+    	std::string_view sv(name);
+    	return GetAetSceneInfoByName(nullptr, prj::string_range(sv));
+    }
+
+    inline AetSetInfo* FindAetSet(const char* name)
+    {
+    	std::string_view sv(name);
+    	return GetAetSetInfoByName(nullptr, prj::string_range(sv));
+    }
+}
+
+namespace spr
+{
+	// NOTE: Queues SprSet file to be loaded
+	inline FUNCTION_PTR(void, __fastcall, LoadSprSet, 0x1405B4770, uint32_t id, prj::string_view* out);
+	// NOTE: Returns true if SprSet file is still loading, false otherwise
+	inline FUNCTION_PTR(bool, __fastcall, CheckSprSetLoading, 0x1405B4810, uint32_t id);
+	// NOTE: Free SprSet file from memory
+	inline FUNCTION_PTR(void, __fastcall, UnloadSprSet, 0x1405B48B0, uint32_t id);
+
+	// NOTE: Draw sprite to screen
+	inline FUNCTION_PTR(SprArgs*, __fastcall, DrawSprite, 0x1405B49C0, SprArgs* args);
+
+	// NOTE: Retrieves a font from the font list
+	inline FUNCTION_PTR(FontInfo*, __fastcall, GetFont, 0x1402C4DC0, FontInfo* font, int32_t font_id);
+	inline FUNCTION_PTR(FontInfo*, __fastcall, GetLocaleFont, 0x1402C4E10, FontInfo* font, int32_t id, bool a3);
+	inline FUNCTION_PTR(void, __fastcall, SetFontSize, 0x1402C5240, FontInfo* font, float w, float h);
+	// NOTE: Draw text to the screen (UTF-8, char*)
+	inline FUNCTION_PTR(void, __fastcall, DrawTextA, 0x1402C57B0, TextArgs* params, uint32_t flags, const char* text);
+	inline FUNCTION_PTR(void**, __fastcall, DrawSimpleText, 0x14027B160, float x, float y, int32_t res, int32_t prio, const char* text, bool center, uint32_t color, const diva::vec4* clip);
+
+	// FROM: https://github.com/vixen256/ps4/tree/master/src/diva.cpp
+	inline FUNCTION_PTR(uint32_t*, __fastcall, GetSpriteId, 0x1405BC8F0, void* a1, const prj::string_range& name);
+}
+
+namespace sound
+{
+	// NOTE: Plays a sound effect.
+	//       `queue_index` can be a value between 1~5 (?)
+	inline FUNCTION_PTR(int32_t, __fastcall, PlaySoundEffect, 0x1405AA550, int32_t queue_index, const char* name, float volume);
+
+	// NOTE: Releases a sound effect from the queue.
+	//
+	inline FUNCTION_PTR(void, __fastcall, ReleaseCue, 0x1405AAD00, int32_t queue_index, const char* name, bool force_release);
+
+	// NOTE: Releases every cue in a sound queue.
+	//
+	inline FUNCTION_PTR(void, __fastcall, ReleaseAllCues, 0x1405AADD0, int32_t queue_index);
+
+	// NOTE: Requests SoundWork to load a sound farc. Returns false if the queue is full.
+	//
+	inline FUNCTION_PTR(bool, __fastcall, RequestFarcLoad, 0x1405AA250, const char* path);
+
+	// NOTE: Returns true if SoundWork is still loading the farc, false otherwise.
+	//
+	inline FUNCTION_PTR(bool, __fastcall, IsFarcLoading, 0x1405AA420, const char* path);
+
+	// NOTE: Unloads a sound farc from memory
+	//
+	inline FUNCTION_PTR(bool, __fastcall, UnloadFarc, 0x1405AA480, const char* path);
+
+	inline FUNCTION_PTR(void, __fastcall, PlayEnterSE, 0x1401A7F00);
+	inline FUNCTION_PTR(void, __fastcall, PlayCancelSE, 0x1401A7F20);
+	inline FUNCTION_PTR(void, __fastcall, PlaySelectSE, 0x1401A7F60);
+}
+
+namespace loc
+{
+	inline FUNCTION_PTR(const char*, __fastcall, GetStrArrayString, 0x140239BC0, int32_t id);
+	inline std::string_view GetString(int32_t id)
+	{
+		if (const char* data = GetStrArrayString(id); data != nullptr)
+			return std::string_view(data, strlen(data));
+		return std::string_view();
+	}
+}
+
+inline FUNCTION_PTR(PvGameplayInfo*, __fastcall, GetPvGameplayInfo, 0x14027DD90);
+inline FUNCTION_PTR(bool, __fastcall, IsPracticeMode, 0x1401E7B90);
+inline FUNCTION_PTR(int32_t, __fastcall, FindNextCommand, 0x140257D50, PVGamePvData* pv_data, int32_t op, int32_t* time, int32_t* branch, int32_t head);
+inline FUNCTION_PTR(PVGameData*, __fastcall, GetPVGameData, 0x140266720);
+inline FUNCTION_PTR(bool, __fastcall, IsInSongResults, 0x1401E8090);
+inline FUNCTION_PTR(int64_t, __fastcall, DrawTriangles, 0x1405B4C50, SpriteVertex* vertices, size_t vertex_count, int32_t res_mode, int32_t prio, uint32_t sprite_id);
+inline FUNCTION_PTR(int32_t, __fastcall, GetGameLocale, 0x1402C8D20);
+
+inline FUNCTION_PTR(bool, __fastcall, IsSuddenEquipped, 0x14024B720, PVGameData* pv_game);
+
+diva::vec2 GetScaledPosition(const diva::vec2& v);
+
+inline prj::vector<prj::string>* GetRomDirectories()
+{
+	return reinterpret_cast<prj::vector<prj::string>*>(0x1414AB8A0);
 }
 
 namespace dsc
@@ -898,6 +1233,11 @@ namespace dsc
 		int32_t unk0C;
 		const char* name;
 	};
+
+    // NOTE: Returns a pointer to a struct that describes DSC opcode <id>
+    inline FUNCTION_PTR(const OpcodeInfo*, __fastcall, GetOpcodeInfo, 0x14024DCA0, int32_t id);
+
+    inline bool IsCurrentDifficulty(int32_t bit) { return (bit & (1 << GetPvGameplayInfo()->difficulty)) != 0; }
 }
 
 namespace game
@@ -929,6 +1269,26 @@ namespace game
 		prj::string name;
 		prj::string se_name;
 	};
+
+    
+
+	inline bool IsFutureToneMode() { return *reinterpret_cast<bool*>(0x1414AB9E3); }
+	inline bool IsPvMode() { return GetPvGameplayInfo()->type == 3 || GetPvGameplayInfo()->type == 6; }
+	inline int32_t GetFramerate() { return *reinterpret_cast<int32_t*>(0x1414ABBB8); }
+
+	// NOTE: The CustomizeSel doesn't have duplicated code for the Switch version
+	//       like other UI screens, so this is valid for both Switch and PS4 mode.
+	inline FUNCTION_PTR(bool, __fastcall, IsCustomizeSelTaskReady, 0x1401DE790);
+
+	inline FUNCTION_PTR(GlobalPVInfo*, __fastcall, GetGlobalPVInfo, 0x1401D6520);
+	inline FUNCTION_PTR(PVLoadParam*, __fastcall, GetPVLoadParam, 0x14040B2A0);
+
+	inline FUNCTION_PTR(char*, __fastcall, GetSaveData, 0x1401D6510);
+	inline FUNCTION_PTR(void*, __fastcall, GetConfigSet, 0x1401D5F40, void* save_data, int32_t pv, bool a3);
+
+	inline FUNCTION_PTR(NoteSE*, __fastcall, GetButtonSE, 0x1403F7540, int32_t id);
+
+	int32_t GetGlobalPvID();
 }
 
 namespace pv_db
@@ -957,6 +1317,19 @@ namespace pv_db
 		uint8_t gap4F0[64];
 	};
 
+    struct PvDBPerformer
+	{
+		int32_t type;
+		int32_t chara;
+		int32_t costume;
+		int32_t pv_costume[5];
+		bool fixed;
+		int32_t exclude;
+		int32_t size;
+		int32_t pseudo_same_id;
+		int32_t item[5];
+	};
+
 	struct PvDBEntry
 	{
 		int32_t pv_id;
@@ -969,13 +1342,130 @@ namespace pv_db
 		uint8_t gap70[24];
 		float sabi_start_time;
 		float sabi_play_time;
-		uint8_t gap90[32];
+		int32_t edit_type;
+		bool disable_motfrm_calc_limit;
+		prj::vector<PvDBPerformer> performers;
 		prj::vector<PvDBDifficulty> difficulties[5];
 		uint8_t gap128[664];
 	};
+
+    inline FUNCTION_PTR(void*, __fastcall, FindPVEntry, 0x1404BC500, int32_t pv_id);
+    inline FUNCTION_PTR(PvDBDifficulty*, __fastcall, FindDifficulty, 0x1404BCA70, void* entry, int32_t difficulty, int32_t edition);
 }
 
-inline bool DifficultySlotInRange(int slot) { return slot >= 0 && slot < 5; }
-inline size_t DifficultyCount(pv_db::PvDBEntry& e, int slot) { return DifficultySlotInRange(slot) ? e.difficulties[slot].size() : 0; }
-inline bool DifficultySlotHasData(pv_db::PvDBEntry& e, int slot) { return DifficultyCount(e, slot) > 0; }
-inline pv_db::PvDBDifficulty& DifficultyAt(pv_db::PvDBEntry& e, int slot, size_t i) { return e.difficulties[slot][i]; }
+
+// NOTE: File IO functions
+typedef void* FileHandler;
+
+inline FUNCTION_PTR(bool, __fastcall, FileRequestLoad, 0x1402A4710, FileHandler* file, const char* path, int32_t a3);
+inline FUNCTION_PTR(bool, __fastcall, FileCheckExists, 0x1402A5330, prj::string* path, prj::string* fixed);
+inline FUNCTION_PTR(bool, __fastcall, FileCheckNotReady, 0x151C03830, FileHandler* file);
+inline FUNCTION_PTR(void*, __fastcall, FileGetData, 0x151C0EF70, FileHandler* file);
+inline FUNCTION_PTR(size_t, __fastcall, FileGetSize, 0x151C7ADA0, FileHandler* file);
+inline FUNCTION_PTR(void, __fastcall, FileFree, 0x1402A4E90, FileHandler* file);
+
+inline bool ShouldUpdateTargets()
+{
+	PVGameData* pv_game = GetPVGameData();
+	if (pv_game != nullptr)
+		return !IsInSongResults() && !pv_game->paused && !pv_game->byte2;
+
+	return false;
+}
+
+namespace pvsel
+{
+    // NOTE: Common structs used in both PVSelectorSwitch and PVsel (PS4);
+    //       You can noticed that I haven't thought of good names for them yet.
+    struct PvData2
+    {
+        int32_t* pv_db_entry;
+        uint8_t gap08[120];
+        int32_t name_sort_index;
+    };
+
+    struct PvData
+    {
+        PvData2* data2;
+        uint8_t data[0x40];
+    };
+
+    struct SelPvList
+    {
+        uint8_t gap00[0xF0];
+        prj::vector<PvData*>* pv_data;
+        uint8_t gapF8[0x28];
+
+        inline size_t GetSongCount() const
+        {
+            if (pv_data)
+                return pv_data->size();
+            return 0;
+        }
+    };
+}
+
+struct CommonMenu
+{
+    int32_t selected_index;
+    uint8_t gap4[8];
+    int32_t max_count;
+};
+
+struct PvDataPS4
+{
+    pvsel::PvData2* data2;
+    uint8_t gap8[72];
+};
+
+struct PVselPS4
+{
+    INSERT_PADDING(0x6C);
+    int32_t state;
+    INSERT_PADDING(0x5578);
+    CommonMenu cmn_menu;
+    INSERT_PADDING(0x318F0);
+    pvsel::SelPvList sel_pv_list;
+    prj::vector<PvDataPS4> sorted_pv_lists[32];
+    prj::vector<PvDataPS4>* cur_pv_list;
+    uint8_t gap37310[24];
+    PvDataPS4 random_pv;
+    int32_t song_counts[21];
+    int32_t all_sort_index;
+    int32_t* cur_sort_index;
+    int32_t dword373D8;
+    int32_t pv_id;
+    int32_t sort_mode;
+    INSERT_PADDING(0x14);
+    int32_t difficulty;
+    int32_t edition;
+};
+
+struct PVSelectorSwitch
+{
+    INSERT_PADDING(0x6C);
+    int32_t state;
+    INSERT_PADDING(0x258BB);
+    bool is_ranking_mode;
+    int32_t dword2592C;
+    pvsel::SelPvList sel_pv_list;
+    INSERT_PADDING(0x498);
+    prj::vector<pvsel::PvData> sorted_pv_lists[32];
+    prj::vector<pvsel::PvData>* cur_pv_list;
+    INSERT_PADDING(0x8);
+    pvsel::PvData random_pv;
+    int32_t* cur_sort_index;
+    int32_t song_counts[21];
+    int32_t all_sort_index;
+    int32_t dword262A0;
+    int32_t pv_id;
+    int32_t dword262A8;
+    int32_t sort_indices[4];
+    int32_t sort_change_dir;
+    int32_t sort_mode;
+    uint8_t difficulty_max;
+    uint8_t difficulty_min;
+    INSERT_PADDING(0x2);
+    int32_t difficulty;
+    int32_t edition;
+};

@@ -1,5 +1,6 @@
+#include "hxcpp.h"
 #include <string.h>
-#include "diva.h"
+#include "diva_types.h"
 
 FUNCTION_PTR(AetArgs*, __fastcall, CreateAetArgsOrg, 0x14028D560, AetArgs*, uint32_t, const char*, int32_t, int32_t);
 FUNCTION_PTR(void, __fastcall, StopAetOrg, 0x1402CA330, int32_t* id);

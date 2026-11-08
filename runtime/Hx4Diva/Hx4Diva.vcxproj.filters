@@ -30,9 +30,6 @@
     <ClCompile Include="safetyhook.cpp">
       <Filter>Header Files\safetyhook\src</Filter>
     </ClCompile>
-    <ClCompile Include="diva.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Zydis.h">

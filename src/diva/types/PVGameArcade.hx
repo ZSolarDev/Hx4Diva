@@ -29,6 +29,6 @@ extern class PVGameArcade {
 	@:native('mute_slide_chime') var muteSlideChime:Bool;
 
 	// Array, length is 64
-	@:native('::ArcadeTargetAt') public static function targetAt(arcade:PVGameArcade, index:Int):Reference<PvGameTarget>;
-	@:native('::ArcadeCurrentTarget') public static function curTarget(arcade:PVGameArcade):Reference<PvGameTarget>;
+	@:native('::ArcadeTargetAt') static function targetAt(arcade:PVGameArcade, index:Int):Reference<PvGameTarget>;
+	@:native('::ArcadeCurrentTarget') static function curTarget(arcade:PVGameArcade):Reference<PvGameTarget>;
 }

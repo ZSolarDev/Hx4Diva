@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "hooks.h"
+#include "task.hpp"
 #include "diva.h"
 
 // Loads all libs from a folder.
@@ -78,6 +79,31 @@ static void ResolveCurrentPv(pv_db::PvDBEntry** out_entry, pv_db::PvDBDifficulty
     *out_diff = pv_db::FindDifficulty(entry, param.difficulty, param.edition);
 }
 
+// The global task.
+class HxTask : public app::Task {
+public:
+    bool init() override {
+        return true;
+    }
+
+    bool ctrl() override {
+        CallOnAll<void()>("OnHxTaskCtrl");
+        return false;
+    }
+
+    bool dest() override {
+        return true;
+    }
+
+    void disp() override {
+        CallOnAll<void()>("OnHxTaskDisp");
+    }
+
+    void basic() override {
+        CallOnAll<void()>("OnHxTaskBasic");
+    }
+};
+
 // Taken from new classics.
 HOOK(bool, __fastcall, TaskPvGameInit, 0x1405DA040, uint64_t a1)
 {
@@ -117,24 +143,112 @@ HOOK(HitState, __fastcall, GetHitStateInternal, 0x14026D2E0,
 {
     HitState result = originalGetHitStateInternal(game, target, a3, a4);
     CallOnAll<void(PVGameArcade*, PvGameTarget*, HitState*)>("OnPvGetHitState", game, target, &result);
-	return result;
+    return result;
 }
 
 HOOK(bool, __fastcall, LoadDscCtrl, 0x14024E270, PVGamePvData* pv_data, prj::string& path, void* a3, bool a4)
 {
     bool result = originalLoadDscCtrl(pv_data, path, a3, a4);
-	pv_db::PvDBEntry* entry = nullptr;
-	pv_db::PvDBDifficulty* diff = nullptr;
-	ResolveCurrentPv(&entry, &diff);
+    pv_db::PvDBEntry* entry = nullptr;
+    pv_db::PvDBDifficulty* diff = nullptr;
+    ResolveCurrentPv(&entry, &diff);
     CallOnAll<void(PVGamePvData*, pv_db::PvDBEntry*, pv_db::PvDBDifficulty*, std::string&, bool*)>("OnLoadDscUpdate", pv_data, entry, diff, std::string(path.data(), path.size()), &result);
-	return result;
+    return result;
 }
 
 HOOK(bool, __fastcall, TaskPvDBParseEntry, 0x1404B1020, uint64_t a1, pv_db::PvDBEntry* entry, void* prop, int32_t id)
 {
-	bool result = originalTaskPvDBParseEntry(a1, entry, prop, id);
-	CallOnAll<void(pv_db::PvDBEntry*, bool*)>("OnPvDBParseEntry", entry, &result);
+    bool result = originalTaskPvDBParseEntry(a1, entry, prop, id);
+    CallOnAll<void(pv_db::PvDBEntry*, bool*)>("OnPvDBParseEntry", entry, &result);
+    return result;
+}
+
+HOOK(void, __fastcall, DrawArcadeGame, 0x140271AB0, PVGameArcade* data)
+{
+    CallOnAll<void(PVGameArcade*)>("OnDrawGame", data);
+    originalDrawArcadeGame(data);
+    CallOnAll<void(PVGameArcade*)>("OnDrawGamePost", data);
+}
+
+HOOK(void, __fastcall, UpdateTargets, 0x14026DD80, PVGameArcade* data, float dt)
+{
+    CallOnAll<void(PVGameArcade*, float)>("OnUpdateTargets", data, dt);
+    originalUpdateTargets(data, dt);
+}
+
+HOOK(void, __fastcall, DrawKiseki, 0x140271030, PvGameTarget* target)
+{
+    CallOnAll<void(PvGameTarget*)>("OnDrawKiseki", target);
+    originalDrawKiseki(target);
+}
+
+// FT PV selection menu hooks
+HOOK(bool, __fastcall, PVselPS4Init, 0x140202D50, PVselPS4* sel)
+{
+    bool result = originalPVselPS4Init(sel);
+    CallOnAll<void(PVselPS4*, bool*)>("OnPvMenuInitFT", sel, &result);
 	return result;
+}
+
+HOOK(void, __fastcall, PVselPS4CreateSortedPVList, 0x140206C30, PVselPS4* sel)
+{
+    originalPVselPS4CreateSortedPVList(sel);
+    CallOnAll<void(PVselPS4*)>("OnPvMenuCreateSortedPVListFT", sel);
+}
+
+HOOK(bool, __fastcall, PVselPS4Ctrl, 0x1402033C0, PVselPS4* sel)
+{
+    bool result = originalPVselPS4Ctrl(sel);
+    CallOnAll<void(PVselPS4*, bool*)>("OnPvMenuCtrlFT", sel, &result);
+    return result;
+}
+
+HOOK(bool, __fastcall, PVselPS4Dest, 0x140204DA0, uint64_t a1)
+{
+    bool result = originalPVselPS4Dest(a1);
+    CallOnAll<void(bool*)>("OnPvMenuDestFT", &result);
+    return result;
+}
+
+HOOK(void, __fastcall, PVselPS4Disp, 0x140204EB0, uint64_t a1)
+{
+    CallOnAll<void()>("OnPvMenuDispFT");
+    originalPVselPS4Disp(a1);
+}
+
+// MM+ PV selection menu hooks
+HOOK(bool, __fastcall, PVSelectorSwitchInit, 0x1406ED9D0, uint64_t a1)
+{
+    bool result = originalPVSelectorSwitchInit(a1);
+    CallOnAll<void(bool*)>("OnPvMenuInit", &result);
+    return result;
+}
+
+HOOK(bool, __fastcall, PVSelectorSwitchCreateSortedPVList, 0x1406F3100, PVSelectorSwitch* sel)
+{
+    bool result = originalPVSelectorSwitchCreateSortedPVList(sel);
+    CallOnAll<void(PVSelectorSwitch*, bool*)>("OnPvMenuCreateSortedPVList", sel, &result);
+    return result;
+}
+
+HOOK(bool, __fastcall, PVSelectorSwitchCtrl, 0x1406EDC40, PVSelectorSwitch* sel)
+{
+    bool result = originalPVSelectorSwitchCtrl(sel);
+    CallOnAll<void(PVSelectorSwitch*, bool*)>("OnPvMenuCtrl", sel, &result);
+    return result;
+}
+
+HOOK(bool, __fastcall, PVSelectorSwitchDest, 0x1406EE720, uint64_t a1)
+{
+    bool result = originalPVSelectorSwitchDest(a1);
+    CallOnAll<void(bool*)>("OnPvMenuDest", &result);
+    return result;
+}
+
+HOOK(void, __fastcall, PVSelectorSwitchDisp, 0x1406EE7B0, uint64_t a1)
+{
+    CallOnAll<void()>("OnPvMenuDisp");
+    originalPVSelectorSwitchDisp(a1);
 }
 
 // DML hooks for Haxe libraries to call into, taken straight from the DML readme.
@@ -145,13 +259,30 @@ extern "C" {
 
     void __declspec(dllexport) Init() {
         INSTALL_HOOK(TaskPvGameInit);
-		INSTALL_HOOK(PVGameLoaderFinishUp);
-		INSTALL_HOOK(TaskPvGameCtrl);
-		INSTALL_HOOK(TaskPvGameDest);
-		INSTALL_HOOK(PVGameReset);
-		INSTALL_HOOK(GetHitStateInternal);
-		INSTALL_HOOK(LoadDscCtrl);
-		INSTALL_HOOK(TaskPvDBParseEntry);
+        INSTALL_HOOK(PVGameLoaderFinishUp);
+        INSTALL_HOOK(TaskPvGameCtrl);
+        INSTALL_HOOK(TaskPvGameDest);
+        INSTALL_HOOK(PVGameReset);
+        INSTALL_HOOK(GetHitStateInternal);
+        INSTALL_HOOK(LoadDscCtrl);
+        INSTALL_HOOK(TaskPvDBParseEntry);
+	    INSTALL_HOOK(DrawArcadeGame);
+		INSTALL_HOOK(UpdateTargets);
+		INSTALL_HOOK(DrawKiseki);
+
+        INSTALL_HOOK(PVselPS4Init);
+        INSTALL_HOOK(PVselPS4CreateSortedPVList);
+        INSTALL_HOOK(PVselPS4Ctrl);
+        INSTALL_HOOK(PVselPS4Dest);
+        INSTALL_HOOK(PVselPS4Disp);
+
+		INSTALL_HOOK(PVSelectorSwitchInit);
+        INSTALL_HOOK(PVSelectorSwitchCreateSortedPVList);
+        INSTALL_HOOK(PVSelectorSwitchCtrl);
+        INSTALL_HOOK(PVSelectorSwitchDest);
+		INSTALL_HOOK(PVSelectorSwitchDisp);
+
+		app::TaskWork::add_task(new HxTask(), "HxTask", 1);
 
         CallOnAll<void()>("Init");
     }

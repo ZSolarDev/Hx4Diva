@@ -4,6 +4,7 @@ import cpp.Float32;
 import cpp.Int32;
 import cpp.Int64;
 import cpp.Reference;
+import diva.types.display.spr.SpriteVertex;
 
 @:include('diva_types.h')
 @:native('PvGameTarget')
@@ -42,10 +43,10 @@ extern class PvGameTarget {
 	@:native('kiseki_width') var kisekiWidth:Float32;
 	@:native('target_index') var targetIndex:Int32;
 
-	@:native('::TargetPrev') public static function getPreviousTarget(target:PvGameTarget):Reference<PvGameTarget>;
-	@:native('::TargetNext') public static function getNextTarget(target:PvGameTarget):Reference<PvGameTarget>;
-	@:native('::HasPrev') public static function hasPreviousTarget(target:PvGameTarget):Bool;
-	@:native('::HasNext') public static function hasNextTarget(target:PvGameTarget):Bool;
+	@:native('::TargetPrev') static function getPreviousTarget(target:PvGameTarget):Reference<PvGameTarget>;
+	@:native('::TargetNext') static function getNextTarget(target:PvGameTarget):Reference<PvGameTarget>;
+	@:native('::HasPrev') static function hasPreviousTarget(target:PvGameTarget):Bool;
+	@:native('::HasNext') static function hasNextTarget(target:PvGameTarget):Bool;
 	// kiseki means 'trail'. It's a list of 40 trail vertices.
-	@:native('::KisekiAt') public static function getKiseki(target:PvGameTarget, index:Int):Reference<SpriteVertex>;
+	@:native('::KisekiAt') static function getKiseki(target:PvGameTarget, index:Int):Reference<SpriteVertex>;
 }

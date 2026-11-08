@@ -169,9 +169,9 @@ class Builder {
 		if (!FileSystem.exists(modOutputPath_hxLibs))
 			FileSystem.createDirectory(modOutputPath_hxLibs);
 
+		File.copy('runtime/Hx4Diva/x64/Release/Hx4Diva.dll', Path.join([modOutputPath, 'Hx4Diva.dll']));
 		if (Utils.flags.exists('debug') && Utils.flags.get('debug')) {
-			File.copy('runtime/Hx4Diva/x64/Debug/Hx4Diva.dll', Path.join([modOutputPath, 'Hx4Diva.dll']));
-			File.copy('runtime/Hx4Diva/x64/Debug/Hx4Diva.pdb', Path.join([modOutputPath, 'Hx4Diva.pdb']));
+			File.copy('runtime/Hx4Diva/x64/Release/Hx4Diva.pdb', Path.join([modOutputPath, 'Hx4Diva.pdb']));
 			File.copy(Path.join([Utils.workingDirectory, data.modOutput + '_hxOut', data.main + '-debug.dll']),
 				Path.join([modOutputPath_hxLibs, data.main + '.dll']));
 			File.copy(Path.join([
@@ -182,7 +182,6 @@ class Builder {
 				data.main + '-debug.pdb'
 			]), Path.join([modOutputPath_hxLibs, data.main + '.pdb']));
 		} else {
-			File.copy('runtime/Hx4Diva/x64/Release/Hx4Diva.dll', Path.join([modOutputPath, 'Hx4Diva.dll']));
 			File.copy(Path.join([Utils.workingDirectory, data.modOutput + '_hxOut', data.main + '.dll']),
 				Path.join([modOutputPath_hxLibs, data.main + '.dll']));
 			if (FileSystem.exists(Path.join([modOutputPath_hxLibs, data.main + '.pdb'])))

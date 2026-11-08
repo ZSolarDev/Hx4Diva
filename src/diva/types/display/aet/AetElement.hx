@@ -1,0 +1,41 @@
+package diva.types.display.aet;
+
+import cpp.ConstCharStar;
+import cpp.Float32;
+import cpp.Int32;
+import cpp.RawPointer;
+import cpp.UInt32;
+
+@:include('diva_types.h')
+@:include('aet_helper.h')
+@:native('AetElement')
+@:structAccess
+@:unreflective
+extern class AetElement {
+	@:native('new AetElement') static function create():RawPointer<AetElement>;
+	@:native('new AetElement') static function createScene(sceneId:UInt32):RawPointer<AetElement>;
+	@:native('delete') static function destroy(e:RawPointer<AetElement>):Void;
+
+	@:native('SetScene') function setScene(id:UInt32):Void;
+	@:native('SetLayer') overload function setLayer(name:ConstCharStar, flags:Int32, prio:Int32, resMode:Int32, startMarker:ConstCharStar,
+		endMarker:ConstCharStar, pos:RawPointer<Vec3>):Bool;
+	@:native('SetLayer') overload function setLayer(name:ConstCharStar, prio:Int32, resMode:Int32, action:Int32):Bool;
+	@:native('GetLayout') function getLayout(layerName:ConstCharStar, finalLayout:AetLayout):Bool;
+	@:native('SetPosition') function setPosition(pos:Vec3):Void;
+	@:native('SetOpacity') function setOpacity(opacity:Float32):Void;
+	@:native('SetLoop') function setLoop(loop:Bool):Void;
+	@:native('SetVisible') function setVisible(visible:Bool):Void;
+	@:native('SetColor') function setColor(color:Int32):Void;
+	@:native('SetMarkers') overload function setMarkers(startMarker:ConstCharStar, endMarker:ConstCharStar):Void;
+	@:native('SetMarkers') overload function setMarkers(startMarker:ConstCharStar, endMarker:ConstCharStar, loop:Bool):Void;
+	@:native('DrawSpriteAt') function drawSpriteAt(layerName:ConstCharStar, spriteId:UInt32, prio:Int32):Bool;
+	@:native('DeleteHandle') function deleteHandle():Void;
+	@:native('Remake') function remake():Void;
+
+	@:native('::GetLayoutAdjustedPosition') static function getLayoutAdjustedPosition(layout:AetLayout, layerName:ConstCharStar):Vec2;
+	@:native('::DrawSpriteAtLayout') static function drawSpriteAtLayout(layout:AetLayout, layerName:ConstCharStar, spriteId:UInt32, prio:Int32, res:Int32,
+		adjustPos:Bool):Void;
+	@:native('::FindSpriteID') static function findSpriteId(name:ConstCharStar):UInt32;
+	@:native('::FindSpriteIDWithLocale') static function findSpriteIdWithLocale(baseName:ConstCharStar):UInt32;
+	@:native('::GetLanguageSuffix') static function getLanguageSuffix():RawStdString;
+}

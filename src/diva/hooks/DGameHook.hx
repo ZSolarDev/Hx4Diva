@@ -1,11 +1,8 @@
 package diva.hooks;
 
 import diva.types.hooktypes.*;
-import dxgi.interfaces.DxgiSwapChain;
 
 enum DGameHook {
-	// Runs when the swapchain is changed.
-	OnSwapChain(hook:DxgiSwapChain->Void);
 	// Runs when the pv is being initialized. Run logic here.
 	OnPvInit(hook:Void->Void);
 	// Runs when the pv is fully initialized and about to start.
@@ -25,4 +22,12 @@ enum DGameHook {
 	OnLoadDscUpdate(cb:DscCtrlContext->Void);
 	// Runs at game startup when loading all pv's.
 	OnPvDBParseEntry(cb:PvDBParseContext->Void);
+	// Runs when drawing the game.
+	OnDrawGame(hook:DrawContext->Void);
+	// Runs after drawing the game.
+	OnDrawGamePost(hook:DrawContext->Void);
+	// Runs when updating the targets.
+	OnUpdateTargets(hook:TargetUpdateContext->Void);
+	// Runs when drawing a target's kiseki.
+	OnDrawKiseki(hook:TargetContext->Void);
 }

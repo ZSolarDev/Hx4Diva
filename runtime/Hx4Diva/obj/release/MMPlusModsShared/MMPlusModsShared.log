@@ -1,0 +1,24 @@
+﻿  app.cpp
+  auth_2d.cpp
+  auth_3d.cpp
+  camera.cpp
+  camera_render.cpp
+  canonical_properties.cpp
+  color.cpp
+  dx_buffer_object.cpp
+  file_handler.cpp
+  frame_rate_control.cpp
+  frustum.cpp
+  matrix_stack.cpp
+  object.cpp
+  print_work.cpp
+  render_context.cpp
+  render_manager.cpp
+  render_texture.cpp
+  resolution_mode.cpp
+  sprite.cpp
+  task.cpp
+  texture.cpp
+  toml.c
+  wrap.cpp
+  MMPlusModsShared.vcxproj -> C:\PROJECTS\Hx4Diva\runtime\Hx4Diva\lib\release\MMPlusModsShared.lib
