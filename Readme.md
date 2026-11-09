@@ -17,21 +17,29 @@
 # Welcome to *Hx4Diva*
 
 Hx4Diva is a modding framework for *Haxe* that allows you to mod *Project DIVA Mega Mix+*. Currently, it exposes:
-- Simple hooking
-- Simple AET usage
-- Many, many structs exposed (with more to come)
+- Simple hooking,
+- Simple AET usage,
+- Many, many structs exposed (with more to come),
 - Simple task system,
+
 ...etc.
 
 ## Setup
 
-Setting up Hx4Diva is simple. Simply run `haxelib run hx4diva setup`, and that should set it all up, including the command alias. To make a project, you can use `hx4diva create [project name]`. To build the project into a working mod, you can then open the folder in terminal or something with a terminal, and run `likIn case anything does fail during this process, [*don't hesitate to report an issue.*](https://github.com/ZSolarDev/Hx4Diva/issues).
+Setting up Hx4Diva is simple.
+- Install the haxelib: `haxelib install Hx4Diva`
+- Run `haxelib run hx4diva setup`
+- To make a project, you can use `hx4diva create [project name]`.
+- To build the project into a working mod, you can then open the folder in terminal or something with a terminal, and run `hx4diva build`.
+
+In case anything does fail during this process, [*don't hesitate to report an issue.*](https://github.com/ZSolarDev/Hx4Diva/issues).
 
 ## Planned Features
 
 - Sound
 - Keyboard input
 - Controller input
+- Assets
 - Maybe more.
 
 ## Credits
