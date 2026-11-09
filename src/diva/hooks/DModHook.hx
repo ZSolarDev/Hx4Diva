@@ -19,7 +19,7 @@ enum DModHook {
 	PreInit(hook:Void->Void);
 
 	/**
-	 * Ran after the game's global variables are initialized. Run most
+	 * Runs after the game's global variables are initialized. Run most
 	 * of your mod initialization here.
 	 * 
 	 * @param hook The function.
@@ -28,7 +28,7 @@ enum DModHook {
 	Init(hook:Void->Void);
 
 	/**
-	 * Ran after the all DLL mods are initialized.
+	 * Runs after the all DLL mods are initialized.
 	 * 
 	 * @param hook The function.
 	 * @since 1.0.0-alpha.1
@@ -54,7 +54,8 @@ enum DModHook {
 	OnFrame(hook:DxgiSwapChain->Void);
 
 	/**
-	 * Ran after the games buffers are resized.
+	 * Runs every time the games buffers are resized, primarily during
+     * window resizing.
 	 * 
 	 * @param hook The function, containing the swap chain.
 	 * @since 1.0.0-alpha.1
@@ -62,7 +63,7 @@ enum DModHook {
 	OnResize(hook:DxgiSwapChain->Void);
 
 	/**
-	 * Ran when the swap chain is changed.
+	 * Runs when the swap chain is changed.
 	 * 
 	 * @param hook The function, containing the swap chain.
 	 * @since 1.0.0-alpha.1
