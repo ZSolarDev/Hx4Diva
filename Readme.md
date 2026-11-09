@@ -40,6 +40,7 @@ In case anything does fail during this process, [*don't hesitate to report an is
 - Keyboard input
 - Controller input
 - Assets
+- GitHub Actions
 - Maybe more.
 
 ## Credits
