@@ -28,7 +28,7 @@ Hx4Diva is a modding framework for *Haxe* that allows you to mod *Project DIVA M
 
 Setting up Hx4Diva is simple.
 - Install the haxelib: `haxelib install Hx4Diva`
-- Run `haxelib run hx4diva setup`
+- Run `haxelib run Hx4Diva setup`
 - To make a project, you can use `hx4diva create [project name]`.
 - To build the project into a working mod, you can then open the folder in terminal or something with a terminal, and run `hx4diva build`.
 
