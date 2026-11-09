@@ -1,15 +1,38 @@
-# Hx4Diva
+> [!WARNING]
+> *Many of the exposed types or features are untested simply due to my lack of experience modding Project DIVA Mega Mix+. If anyone would like to test this framework further, seriously or not, and tell me the results of what's broken and what isn't, please do.*
 
-Hx4Diva is a framework for modding Project DIVA Mega Mix+ in Haxe.
-It gives you:
+<div align="center">
+<img width="400" src="https://github.com/ZSolarDev/Hx4Diva/blob/main/_art/Logo.png">
+<h1 align="center">
+  <img src="https://badgen.net/haxelib/d/Hx4Diva?color=EA8220&labelColor=333333&scale=1.5">
+  <img src="https://badgen.net/haxelib/v/Hx4Diva?color=EA8220&labelColor=333333&scale=1.5">
+  <img src="https://badgen.net/haxelib/license/Hx4Diva?color=EA8220&labelColor=333333&scale=1.5">
+</h1>
 
-- Easy hooking
-- Easy AET usage
+### *Simple creation of [Hatsune Miku: Project DIVA Mega Mix+](https://miku.sega.com/megamixplus/index.html) mods in [Haxe](https://haxe.org).*
+  
+[***Welcome***](#welcome-to-hx4diva) • [***Setup***](#setup) • [***Planned Features***](#planned-features) • [***Credits***](#credits)
+</div>
+
+# Welcome to *Hx4Diva*
+
+# Hx4Diva is a modding framework for *Haxe* that allows you to mod *Project DIVA Mega Mix+*. Currently, it exposes:
+- Simple hooking
+- Simple AET usage
 - Many, many structs exposed (with more to come)
-- Easy task system
-- ..and more!
+- Simple task system,
+...etc.
 
-I personally find haxe less complicated than c/c++, so I mainly made this for my own benefit, but I figured I might as well formally release it for anyone else to use. For information on how to use it, see [the wiki](https://github.com/ZSolarDev/Hx4Diva/wiki).
+## Setup
+
+Setting up Hx4Diva is simple. Simply run `haxelib run hx4diva setup`, and that should set it all up, including the command alias. To make a project, you can use `hx4diva create [project name]`. To build the project into a working mod, you can then open the folder in terminal or something with a terminal, and run `likIn case anything does fail during this process, [*don't hesitate to report an issue.*](https://github.com/ZSolarDev/Hx4Diva/issues).
+
+## Planned Features
+
+- Sound
+- Keyboard input
+- Controller input
+- Maybe more.
 
 ## Credits
 
