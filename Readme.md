@@ -16,7 +16,7 @@
 
 # Welcome to *Hx4Diva*
 
-# Hx4Diva is a modding framework for *Haxe* that allows you to mod *Project DIVA Mega Mix+*. Currently, it exposes:
+Hx4Diva is a modding framework for *Haxe* that allows you to mod *Project DIVA Mega Mix+*. Currently, it exposes:
 - Simple hooking
 - Simple AET usage
 - Many, many structs exposed (with more to come)
