@@ -54,7 +54,7 @@ enum DModHook {
 	OnFrame(hook:DxgiSwapChain->Void);
 
 	/**
-	 * Ran afer the games buffers are resized.
+	 * Ran after the games buffers are resized.
 	 * 
 	 * @param hook The function, containing the swap chain.
 	 * @since 1.0.0-alpha.1
