@@ -7,7 +7,7 @@
   "version": "1.0.0-alpha.1",
   "classPath": "src/",
   "releasenote": "Initial release, 22 NM(non-mod) hooks.",
-  "contributors": ["ZSolarDev", "Clover", "Koren", "Aura39", "Vixen"],
+  "contributors": ["ZSolarDev", "Aura39"],
   "dependencies": {
     "hxcpp": "",
     "hxp": ""
