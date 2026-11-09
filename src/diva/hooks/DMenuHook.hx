@@ -13,7 +13,7 @@ enum DMenuHook {
 	OnMenuInit(hook:ResultContext->Void);
 
 	/**
-	 * Runs when the game builds it's sorted list of PV's.
+	 * Runs when the game builds its sorted list of PV's.
 	 * 
 	 * @param hook The hook.
 	 * @since 1.0.0-alpha.1
