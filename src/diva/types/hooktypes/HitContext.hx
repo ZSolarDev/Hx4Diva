@@ -1,11 +1,11 @@
 package diva.types.hooktypes;
 
-import cpp.Pointer;
+import cpp.Star;
 
 class HitContext {
-    public var game:Pointer<PVGameArcade>;
-    public var target:Pointer<PvGameTarget>;
-    public var result:HitState;
+	public var game:Star<PVGameArcade>;
+	public var target:Star<PvGameTarget>;
+	public var result:HitState;
 
-    public function new() {}
+	public function new() {}
 }

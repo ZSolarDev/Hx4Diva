@@ -4,9 +4,9 @@
   "license": "MIT",
   "tags": ["project-diva", "hxcpp", "useless"],
   "description": "A framework for modding Project DIVA Mega Mix+ in Haxe.",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "classPath": "src/",
-  "releasenote": "Initial release, 22 NM(non-mod) hooks.",
+  "releasenote": "All contexts use Star rather than some using Pointer, package haxelib differently.",
   "contributors": ["ZSolarDev", "Aura39"],
   "dependencies": {
     "hxcpp": "",

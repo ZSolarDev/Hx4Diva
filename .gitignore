@@ -1,3 +1,15 @@
 runtime/Hx4Diva/Hx4Diva
 runtime/Hx4Diva/.vs
 .vscode/
+
+# Local lib testing.
+src/Main.hx
+mod.json
+_hxOut.hxml
+
+Hx4Diva-TestMod/
+hx4diva-testmod_hxOut/
+
+# The haxelib.
+Hx4Diva.zip
+updateHaxelib.bat

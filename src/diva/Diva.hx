@@ -310,8 +310,8 @@ class Diva {
 
 	static function onPvGetHitState(game:Star<PVGameArcade>, target:Star<PvGameTarget>, result:Pointer<HitState>) {
 		var hitCtx:HitContext = new HitContext();
-		hitCtx.game = Pointer.fromStar(game);
-		hitCtx.target = Pointer.fromStar(target);
+		hitCtx.game = game;
+		hitCtx.target = target;
 		hitCtx.result = result.ref;
 
 		for (hook in hookManager.gameHooks['OnPvGetHitState'].copy()) {
@@ -331,9 +331,9 @@ class Diva {
 
 	static function onLoadDscUpdate(data:Star<PVGamePvData>, entry:Star<PvDBEntry>, difficulty:Star<PvDBDifficulty>, path:RawStdString, result:Pointer<Bool>) {
 		var dscCtrlCtx:DscCtrlContext = new DscCtrlContext();
-		dscCtrlCtx.data = Pointer.fromStar(data);
-		dscCtrlCtx.entry = entry != null ? Pointer.fromStar(entry) : null;
-		dscCtrlCtx.difficulty = difficulty != null ? Pointer.fromStar(difficulty) : null;
+		dscCtrlCtx.data = data;
+		dscCtrlCtx.entry = entry != null ? entry : null;
+		dscCtrlCtx.difficulty = difficulty != null ? difficulty : null;
 		dscCtrlCtx.path = toString(path);
 		dscCtrlCtx.result = result.ref;
 
@@ -354,7 +354,7 @@ class Diva {
 
 	static function onPvDBParseEntry(entry:Star<PvDBEntry>, result:Pointer<Bool>) {
 		var pvdbParseCtx = new PvDBParseContext();
-		pvdbParseCtx.entry = Pointer.fromStar(entry);
+		pvdbParseCtx.entry = entry;
 		pvdbParseCtx.result = result.ref;
 
 		for (hook in hookManager.gameHooks['OnPvDBParseEntry'].copy()) {
