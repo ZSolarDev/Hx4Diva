@@ -1,5 +1,5 @@
 > [!WARNING]
-> *Many of the exposed types or features are untested simply due to my lack of experience modding Project DIVA Mega Mix+. If anyone would like to test this framework further, seriously or not, and tell me the results of what's broken and what isn't, please do.*
+> *Many of the exposed types or hooks/hook uses are untested simply due to my lack of experience modding Project DIVA Mega Mix+. If anyone would like to test this framework further, seriously or not, and tell me the results of what's broken and what isn't, please do.*
 
 <div align="center">
 <img width="400" src="https://github.com/ZSolarDev/Hx4Diva/blob/main/_art/Logo.png">
