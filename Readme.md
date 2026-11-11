@@ -3,7 +3,10 @@
 
 <div align="center">
 <img width="400" src="https://github.com/ZSolarDev/Hx4Diva/blob/main/_art/Logo.png">
-<h1 align="center">
+
+# Hx4Diva
+
+<h1>
   <img src="https://badgen.net/haxelib/d/Hx4Diva?color=EA8220&labelColor=333333&scale=1.5">
   <img src="https://badgen.net/haxelib/v/Hx4Diva?color=EA8220&labelColor=333333&scale=1.5">
   <img src="https://badgen.net/haxelib/license/Hx4Diva?color=EA8220&labelColor=333333&scale=1.5">
@@ -14,12 +17,12 @@
 [***Welcome***](#welcome-to-hx4diva) • [***Setup***](#setup) • [***Planned Features***](#planned-features) • [***Credits***](#credits)
 </div>
 
-# Welcome to *Hx4Diva*
+# Welcome to Hx4Diva
 
 Hx4Diva is a modding framework for *Haxe* that allows you to mod *Project DIVA Mega Mix+*. Currently, it exposes:
 - Simple hooking,
 - Simple AET usage,
-- Many, many structs exposed (with more to come),
+- Many, many structs and functions exposed (with more to come),
 - Simple task system,
 
 ...etc.
@@ -32,7 +35,9 @@ Setting up Hx4Diva is simple.
 - To make a project, you can use `hx4diva create [project name]`.
 - To build the project into a working mod, you can then open the folder in terminal or something with a terminal, and run `hx4diva build`.
 
-In case anything does fail during this process, [*don't hesitate to report an issue.*](https://github.com/ZSolarDev/Hx4Diva/issues).
+For further instruction, [refer to the wiki.](https://github.com/ZSolarDev/Hx4Diva/wiki/Creating-a-Mod)
+
+In case anything does fail during this process, [*don't hesitate to report an issue.*](https://github.com/ZSolarDev/Hx4Diva/issues)
 
 ## Planned Features
 
