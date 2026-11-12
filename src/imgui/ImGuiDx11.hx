@@ -3,6 +3,7 @@ package imgui;
 import d3d11.interfaces.D3d11Device;
 import d3d11.interfaces.D3d11DeviceContext;
 import diva.Diva;
+import diva.hooks.DModHook;
 import dxgi.interfaces.DxgiSwapChain;
 import imgui.ImGui;
 
@@ -82,7 +83,7 @@ class ImGuiDx11 {
 	static var initialized:Bool = false;
 	static var failed:Bool = false;
 	static var hooked:Bool = false;
-	static var swapChainHook = OnSwapChain((swapChain:DxgiSwapChain) -> {
+	static var swapChainHook = DModHook.OnSwapChain((swapChain:DxgiSwapChain) -> {
 		ImGuiDx11.destroy(true);
 		ImGuiDx11.init(swapChain, Diva.curDevice, Diva.curDeviceContext);
 	});
