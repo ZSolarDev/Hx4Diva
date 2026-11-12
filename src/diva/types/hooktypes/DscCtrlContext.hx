@@ -1,6 +1,8 @@
 package diva.types.hooktypes;
 
 import cpp.Star;
+import diva.types.pv_db.PvDBDifficulty;
+import diva.types.pv_db.PvDBEntry;
 
 class DscCtrlContext {
 	public var data:Star<PVGamePvData>;

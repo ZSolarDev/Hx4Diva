@@ -15,6 +15,7 @@ import diva.task.*;
 import diva.types.*;
 import diva.types.hooktypes.*;
 import diva.types.menu.*;
+import diva.types.pv_db.*;
 import dxgi.interfaces.DxgiSwapChain.NativeIDXGISwapChain;
 import dxgi.interfaces.DxgiSwapChain;
 import haxe.Json;
@@ -235,15 +236,6 @@ class Diva {
 		taskManager = new DTaskManager();
 	}
 
-	/**
-	 * Turns a `RawStdString` into a `String`.
-	 * 
-	 * @param rawStr The string to convert.
-	 * @since 1.0.0-alpha.1
-	 */
-	public static function toString(rawStr:RawStdString):String
-		return rawStr.c_str().toString();
-
 	// --------- MOD HOOKS --------- //
 	static function preInit()
 		for (hook in hookManager.modHooks['PreInit'].copy())
@@ -334,7 +326,7 @@ class Diva {
 		dscCtrlCtx.data = data;
 		dscCtrlCtx.entry = entry != null ? entry : null;
 		dscCtrlCtx.difficulty = difficulty != null ? difficulty : null;
-		dscCtrlCtx.path = toString(path);
+		dscCtrlCtx.path = path.toString();
 		dscCtrlCtx.result = result.ref;
 
 		for (hook in hookManager.gameHooks['OnLoadDscUpdate'].copy()) {
@@ -421,9 +413,9 @@ class Diva {
 		}
 	}
 
-	static function onDrawKiseki(game:Star<PvGameTarget>) {
+	static function onDrawKiseki(target:Star<PvGameTarget>) {
 		var targetCtx:TargetContext = new TargetContext();
-		targetCtx.game = game;
+		targetCtx.target = target;
 		for (hook in hookManager.gameHooks['OnDrawKiseki'].copy()) {
 			switch (hook) {
 				case OnDrawKiseki(onDrawKiseki):

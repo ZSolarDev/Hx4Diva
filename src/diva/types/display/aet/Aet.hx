@@ -64,6 +64,6 @@ extern class Aet {
 
 	@:native('::aet::GetLayout') static function getLayout(handle:Int32, layerName:ConstCharStar, out:RawPointer<AetLayout>):Bool;
 
-	@:native('::aet::FindAetScene') static function FindAetScene(name:ConstCharStar):RawPointer<AetScene>;
-	@:native('::aet::FindAetSet') static function FindAetSet(name:ConstCharStar):RawPointer<AetSet>;
+	@:native('::aet::FindAetScene') static function findAetScene(name:ConstCharStar):RawPointer<AetSceneInfo>;
+	@:native('::aet::FindAetSet') static function findAetSet(name:ConstCharStar):RawPointer<AetSetInfo>;
 }

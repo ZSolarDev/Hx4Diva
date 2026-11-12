@@ -44,7 +44,7 @@ bool AetElement::SetLayer(std::string name, int32_t flags, int32_t prio, int32_t
 	args.layer_name = layer_name.c_str();
 	args.start_marker = start_marker;
 	args.end_marker = end_marker;
-	args.flags = flags;
+	args.flags = static_cast<AetFlags>(flags);
 	args.index = 0;
 	args.layer = 0;
 	args.prio = prio;
@@ -69,6 +69,12 @@ bool AetElement::GetLayout(std::string layer_name, AetLayout& layout) const
     return aet::GetLayout(handle, layer_name.c_str(), &layout);
 }
 
+void AetElement::SetScale(const diva::vec3& scale)
+{
+	args.scale = scale;
+	Remake();
+}
+
 void AetElement::SetPosition(const diva::vec3& pos)
 {
 	args.pos = pos;
@@ -83,14 +89,14 @@ void AetElement::SetOpacity(float opacity)
 
 void AetElement::SetLoop(bool loop)
 {
-	int32_t flags = args.flags & ~0x30000;
-	args.flags = flags | (loop ? 0x10000 : 0x20000);
+	args.flags &= ~0x30000;
+    args.flags |= loop ? 0x10000 : 0x20000;
 }
 
 void AetElement::SetVisible(bool visible)
 {
-	int32_t flags = args.flags & ~0x8;
-	args.flags = flags | (!visible ? 0x8 : 0x0);
+	args.flags &= ~0x8;
+    args.flags |= visible ? 0x0 : 0x8;
 	aet::SetVisible(handle, visible);
 }
 

@@ -38,6 +38,7 @@ public:
 
 	bool GetLayout(std::string layer_name, AetLayout& layout) const;
 
+    void SetScale(const diva::vec3& scale);
 	void SetPosition(const diva::vec3& pos);
 	void SetOpacity(float opacity);
 	void SetLoop(bool loop);

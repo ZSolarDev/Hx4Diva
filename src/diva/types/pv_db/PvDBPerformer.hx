@@ -1,4 +1,4 @@
-package diva.types;
+package diva.types.pv_db;
 
 import cpp.Float32;
 import cpp.Int32;

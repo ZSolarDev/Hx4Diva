@@ -22,10 +22,12 @@ extern class AetElement {
 	@:native('delete') static function destroy(e:RawPointer<AetElement>):Void;
 
 	@:native('SetScene') function setScene(id:UInt32):Void;
-	@:native('SetLayer') overload function setLayer(name:ConstCharStar, flags:Int32, prio:Int32, resMode:Int32, startMarker:ConstCharStar,
+	@:native('SetLayer') overload function setLayer(name:ConstCharStar, flags:Int32, prio:Int32, resMode:AetResMode, startMarker:ConstCharStar,
 		endMarker:ConstCharStar, pos:RawPointer<Vec3>):Bool;
-	@:native('SetLayer') overload function setLayer(name:ConstCharStar, prio:Int32, resMode:Int32, action:Int32):Bool;
+	@:native('SetLayer') overload function setLayer(name:ConstCharStar, prio:Int32, resMode:AetResMode, action:AetAction):Bool;
 	@:native('GetLayout') function getLayout(layerName:ConstCharStar, finalLayout:AetLayout):Bool;
+	// Since 1.0.0-alpha.3
+	@:native('SetScale') function setScale(scale:Vec3):Void;
 	@:native('SetPosition') function setPosition(pos:Vec3):Void;
 	@:native('SetOpacity') function setOpacity(opacity:Float32):Void;
 	@:native('SetLoop') function setLoop(loop:Bool):Void;
@@ -36,6 +38,12 @@ extern class AetElement {
 	@:native('DrawSpriteAt') function drawSpriteAt(layerName:ConstCharStar, spriteId:UInt32, prio:Int32):Bool;
 	@:native('DeleteHandle') function deleteHandle():Void;
 	@:native('Remake') function remake():Void;
+
+	// all since 1.0.0-alpha.3
+	@:native('GetSceneID') function getSceneID():UInt32;
+	@:native('GetArgs') function getArgs():AetArgs;
+	@:native('Ended') function hasEnded():Bool;
+	@:native('IsPlaying') function isPlaying():Bool;
 
 	@:native('::GetLayoutAdjustedPosition') static function getLayoutAdjustedPosition(layout:AetLayout, layerName:ConstCharStar):Vec2;
 	@:native('::DrawSpriteAtLayout') static function drawSpriteAtLayout(layout:AetLayout, layerName:ConstCharStar, spriteId:UInt32, prio:Int32, res:Int32,

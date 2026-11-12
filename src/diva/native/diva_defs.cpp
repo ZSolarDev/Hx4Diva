@@ -77,7 +77,7 @@ void aet::CreateAetArgs(AetArgs* args, uint32_t scene_id, const char* layer_name
 void aet::CreateAetArgs(AetArgs* args, uint32_t scene_id, const char* layer_name, int32_t flags, int32_t layer, int32_t prio, const char* start_marker, const char* end_marker)
 {
 	CreateAetArgs(args, scene_id, layer_name, prio);
-	args->flags = flags;
+	args->flags = static_cast<AetFlags>(flags);
 	args->layer = layer;
 	args->start_marker = start_marker;
 	args->end_marker = end_marker;

@@ -24,7 +24,7 @@ extern class AetArgs {
 	@:native('index') var index:Int32;
 	@:native('layer') var layer:Int32;
 	@:native('prio') var prio:Int32;
-	@:native('res_mode') var resMode:Int32;
+	@:native('res_mode') var resMode:AetResMode;
 	@:native('pos') var pos:Vec3;
 	@:native('rot') var rot:Vec3;
 	@:native('scale') var scale:Vec3;
@@ -38,7 +38,7 @@ extern class AetArgs {
 	@:native('sprite_replace') var spriteReplace:PrjMap<UInt32, UInt32>;
 	@:native('sprite_texture') var spriteTexture:PrjMap<UInt32, RawPointer<CppVoid>>;
 	@:native('sprite_discard') var spriteDiscard:PrjMap<UInt32, UInt32>;
-	@:native('frame_rate_control') var frameRateControl:RawPointer<CppVoid>;
+	@:native('frame_rate_control') var frameRateControl:AetFrameRateControl;
 	@:native('sound_voice') var soundVoice:Bool;
 	@:native('id') var id:Int32;
 	@:native('pos_2') var pos2:Vec3;

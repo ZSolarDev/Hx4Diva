@@ -528,6 +528,44 @@ enum AetAction : int32_t
 	AetAction_SpecialLoop = 6
 };
 
+struct FrameRateControl
+{
+    void* vftable;
+    float frame_speed;
+};
+
+enum AetFlags : int32_t
+{
+    AetFlags_None = 0x000000,
+    AetFlags_End = 0x000001,
+    AetFlags_Reverse = 0x000002,
+    AetFlags_Pause = 0x000004,
+    AetFlags_Hidden = 0x000008,
+    AetFlags_Loop = 0x010000,
+    AetFlags_Play_Once = 0x020000,
+    AetFlags_FlipH = 0x040000,
+    AetFlags_FlipV = 0x080000,
+    AetFlags_100000 = 0x100000
+};
+
+inline constexpr AetFlags operator|(AetFlags a, AetFlags b) {
+    return static_cast<AetFlags>(static_cast<int32_t>(a) | static_cast<int32_t>(b));
+}
+inline constexpr AetFlags operator&(AetFlags a, AetFlags b) {
+    return static_cast<AetFlags>(static_cast<int32_t>(a) & static_cast<int32_t>(b));
+}
+inline constexpr AetFlags operator~(AetFlags a) {
+    return static_cast<AetFlags>(~static_cast<int32_t>(a));
+}
+inline AetFlags& operator|=(AetFlags& a, AetFlags b) { return a = a | b; }
+inline AetFlags& operator&=(AetFlags& a, AetFlags b) { return a = a & b; }
+inline constexpr AetFlags operator|(AetFlags a, int32_t b) { return static_cast<AetFlags>(static_cast<int32_t>(a) | b); }
+inline constexpr AetFlags operator|(int32_t a, AetFlags b) { return static_cast<AetFlags>(a | static_cast<int32_t>(b)); }
+inline constexpr AetFlags operator&(AetFlags a, int32_t b) { return static_cast<AetFlags>(static_cast<int32_t>(a) & b); }
+inline constexpr AetFlags operator&(int32_t a, AetFlags b) { return static_cast<AetFlags>(a & static_cast<int32_t>(b)); }
+inline AetFlags& operator|=(AetFlags& a, int32_t b) { return a = a | b; }
+inline AetFlags& operator&=(AetFlags& a, int32_t b) { return a = a & b; }
+
 struct AetArgs
 {
 	uint32_t scene_id = 0;
@@ -537,7 +575,7 @@ struct AetArgs
 	prj::string loop_marker;
 	float start_time = -1.0f;
 	float end_time = -1.0f;
-	int32_t flags = 0x0;
+	AetFlags flags = AetFlags_None;
 	int32_t index = 0;
 	int32_t layer = 0;
 	int32_t prio = 0;
@@ -555,7 +593,7 @@ struct AetArgs
 	prj::map<uint32_t, uint32_t> sprite_replace;
 	prj::map<uint32_t, void*> sprite_texture;
 	prj::map<uint32_t, uint32_t> sprite_discard;
-	void* frame_rate_control = nullptr;
+	FrameRateControl* frame_rate_control = nullptr;
 	bool sound_voice = false;
 	int32_t dword154 = 0;
 	int32_t dword158 = 0;
@@ -1349,8 +1387,8 @@ namespace pv_db
 		uint8_t gap128[664];
 	};
 
-    inline FUNCTION_PTR(void*, __fastcall, FindPVEntry, 0x1404BC500, int32_t pv_id);
-    inline FUNCTION_PTR(PvDBDifficulty*, __fastcall, FindDifficulty, 0x1404BCA70, void* entry, int32_t difficulty, int32_t edition);
+    inline FUNCTION_PTR(PvDBEntry*, __fastcall, FindPVEntry, 0x1404BC500, int32_t pv_id);
+    inline FUNCTION_PTR(PvDBDifficulty*, __fastcall, FindDifficulty, 0x1404BCA70, PvDBEntry* entry, int32_t difficulty, int32_t edition);
 }
 
 
