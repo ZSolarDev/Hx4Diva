@@ -4,6 +4,7 @@ import cpp.Float32;
 import cpp.Int32;
 import cpp.Int64;
 import cpp.RawPointer;
+import cpp.Reference;
 import diva.types.prj.PrjVector;
 
 @:include('diva_types.h')
@@ -11,8 +12,8 @@ import diva.types.prj.PrjVector;
 @:structAccess
 extern class PVGameData {
 	@:native('loaded') var loaded:Bool;
-	@:native('pv_data') var pvData:PVGamePvData;
-	@:native('ui') var gameUI:PVGameUI;
+	@:native('pv_data') var pvData:Reference<PVGamePvData>;
+	@:native('ui') var gameUI:Reference<PVGameUI>;
 	@:native('life') var life:Int32;
 	@:native('score') var score:Int32;
 	@:native('scoring_enabled') var scoringEnabled:Bool;
@@ -28,7 +29,7 @@ extern class PVGameData {
 	@:native('challenge_bonus') var challengeBonus:Int32;
 	@:native('reference_score') var referenceScore:Int32;
 	@:native('reference_score_with_life') var referenceScoreWithLife:Int32;
-	@:native('target_reference_score') var targetReferenceScore:PrjVector<Int32>;
+	@:native('target_reference_scores') var targetReferenceScores:Reference<PrjVector<Int32>>;
 	@:native('percentage') var percentage:Float32;
 	@:native('challenge_time_start') var challengeTimeStart:Int64;
 	@:native('challenge_time_end') var challengeTimeEnd:Int64;

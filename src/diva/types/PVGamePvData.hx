@@ -20,7 +20,7 @@ extern class PVGamePvData {
 	@:native('has_dsc_signature') var hasDscSignature:Bool;
 	@:native('is_dsc_ac200_format') var isDscAC200Format:Bool;
 	@:native('targets_remaining') var targetsRemaining:Int;
-	@:native('targets') var targets:PrjVector<PvDscTargetGroup>;
+	@:native('targets') var targets:Reference<PrjVector<PvDscTargetGroup>>;
 	@:native('target_index') var targetIndex:SizeT;
 	@:native('dsc_branch_mode') var dscBranchMode:Int32;
 	@:native('first_challenge_target_index') var firstChallengeTargetIndex:Int32;

@@ -1,5 +1,6 @@
 package diva.types.display.aet;
 
+import cpp.Reference;
 import cpp.Float32;
 import cpp.Int32;
 import cpp.UInt32;
@@ -9,9 +10,9 @@ import cpp.UInt8;
 @:native('AetLayout')
 @:structAccess
 extern class AetLayout {
-	@:native('matrix') var matrix:Mat4;
-	@:native('position') var position:Vec3;
-	@:native('anchor') var anchor:Vec3;
+	@:native('matrix') var matrix:Reference<Mat4>;
+	@:native('position') var position:Reference<Vec3>;
+	@:native('anchor') var anchor:Reference<Vec3>;
 	@:native('width') var width:Float32;
 	@:native('height') var height:Float32;
 	@:native('opacity') var opacity:Float32;

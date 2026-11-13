@@ -4,9 +4,9 @@
   "license": "MIT",
   "tags": ["project-diva", "hxcpp", "useless"],
   "description": "A framework for modding Project DIVA Mega Mix+ in Haxe.",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "classPath": "src/",
-  "releasenote": "Expand linc_diva with more AET capability, begin docs on linc_diva, etc.",
+  "releasenote": "Fix accidental dereferencing with a handful of types, make vector alloc(), start DivaGlobal, and more in linc_diva.",
   "contributors": ["ZSolarDev", "Aura39"],
   "dependencies": {
     "hxcpp": "",

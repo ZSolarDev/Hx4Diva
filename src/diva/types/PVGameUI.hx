@@ -1,5 +1,6 @@
 package diva.types;
 
+import cpp.Reference;
 import cpp.Float32;
 import cpp.Int32;
 import cpp.RawPointer;
@@ -35,5 +36,5 @@ extern class PVGameUI {
     @:native('combo_counter_state') var comboCounterState:Int32;
     @:native('combo_counter_time') var comboCounterTime:Float32;
     @:native('combo_num') var comboNum:Int32;
-    @:native('combo_counter_pos') var comboCounterPos:Vec2;
+    @:native('combo_counter_pos') var comboCounterPos:Reference<Vec2>;
 }

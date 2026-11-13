@@ -1,5 +1,6 @@
 package diva.types.display.spr;
 
+import cpp.Reference;
 import cpp.Float32;
 import cpp.Int32;
 import cpp.RawPointer;
@@ -14,12 +15,12 @@ extern class PrintWork {
 	@:native('color') var color:Int32;
 	@:native('fill_color') var fillColor:Int32;
 	@:native('clip') var clip:Bool;
-	@:native('clip_data') var clipData:Vec4;
+	@:native('clip_data') var clipData:Reference<Vec4>;
 	@:native('prio') var prio:Int32;
 	@:native('layer') var layer:Int32;
 	@:native('res_mode') var resMode:Int32;
-	@:native('text_current') var textCurrent:Vec2;
-	@:native('line_origin') var lineOrigin:Vec2;
+	@:native('text_current') var textCurrent:Reference<Vec2>;
+	@:native('line_origin') var lineOrigin:Reference<Vec2>;
 	@:native('line_length') var lineLength:SizeT;
 	@:native('font') var font:RawPointer<FontInfo>;
 	@:native('empty_char') var emptyChar:UInt16;

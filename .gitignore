@@ -4,6 +4,7 @@ runtime/Hx4Diva/.vs
 
 # Local lib testing.
 src/Main.hx
+src/divaitg/
 mod.json
 _hxOut.hxml
 

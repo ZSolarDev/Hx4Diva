@@ -2,6 +2,7 @@ package diva.types.menu;
 
 import cpp.Int32;
 import cpp.RawPointer;
+import cpp.Reference;
 import cpp.UInt8;
 import diva.types.menu.sort.*;
 import diva.types.prj.PrjVector;
@@ -12,11 +13,11 @@ import diva.types.prj.PrjVector;
 extern class PVSelectorSwitch {
 	@:native('state') var state:Int32;
 	@:native('is_ranking_mode') var isRankingMode:Bool;
-	@:native('sel_pv_list') var selPvList:SelPvList;
+	@:native('sel_pv_list') var selPvList:Reference<SelPvList>;
 	// prj::vector<pvsel::PvData> sorted_pv_lists[32];
 	@:native('sorted_pv_lists') var sortedPvLists:RawPointer<PrjVector<PvData>>;
 	@:native('cur_pv_list') var curPvList:RawPointer<PrjVector<PvData>>;
-	@:native('random_pv') var randomPv:PvData;
+	@:native('random_pv') var randomPv:Reference<PvData>;
 
 	/**
 	 * The index into the current sort mode. Use in combination with

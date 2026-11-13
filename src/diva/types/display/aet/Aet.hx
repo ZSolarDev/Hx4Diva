@@ -66,4 +66,12 @@ extern class Aet {
 
 	@:native('::aet::FindAetScene') static function findAetScene(name:ConstCharStar):RawPointer<AetSceneInfo>;
 	@:native('::aet::FindAetSet') static function findAetSet(name:ConstCharStar):RawPointer<AetSetInfo>;
+
+	public inline static function getLayerNames(handle:Int32):Array<String> {
+		var names:Array<String> = [];
+		var comp = new AetComposition();
+		Aet.getComposition(RawPointer.addressOf(comp), handle);
+		untyped __cpp__('for (auto& kv : {0}) {1}->push(::String::create(kv.first.c_str()));', comp, names);
+		return names;
+	}
 }

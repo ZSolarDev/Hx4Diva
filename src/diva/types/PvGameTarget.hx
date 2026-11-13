@@ -25,11 +25,11 @@ extern class PvGameTarget {
 	@:native('target_aet') var targetAet:Int32;
 	@:native('button_aet') var buttonAet:Int32;
 	@:native('target_eff_aet') var targetEffAet:Int32;
-	@:native('target_pos') var targetPos:Vec2;
-	@:native('button_pos') var buttonPos:Vec2;
-	@:native('delta_pos') var deltaPos:Vec2;
-	@:native('delta_pos_sq') var deltaPosSQ:Vec2;
-	@:native('vecA0') var vecA0:Vec2;
+	@:native('target_pos') var targetPos:Reference<Vec2>;
+	@:native('button_pos') var buttonPos:Reference<Vec2>;
+	@:native('delta_pos') var deltaPos:Reference<Vec2>;
+	@:native('delta_pos_sq') var deltaPosSQ:Reference<Vec2>;
+	@:native('vecA0') var vecA0:Reference<Vec2>;
 	@:native('note_active') var noteActive:Bool;
 	@:native('out_start_time') var outStartTime:Float32;
 	@:native('hit_state') var hitState:HitState;

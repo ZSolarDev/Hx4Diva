@@ -12,4 +12,6 @@ extern class PrjMap<K, V> {
 	function count(key:K):SizeT;
 	@:native('insert_or_assign') function set(key:K, value:V):Void;
 	@:native('operator[]') function get(key:K):Reference<V>;
+
+	function new();
 }
