@@ -1,8 +1,6 @@
-import haxe.Json;
 import hxp.Log;
 import hxp.Path;
 import hxp.Script;
-import hxp.System;
 import sys.FileSystem;
 import sys.io.File;
 

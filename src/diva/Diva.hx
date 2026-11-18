@@ -41,125 +41,156 @@ import haxe.Resource;
 #include <cstdio>
 // Mod hooks
 extern "C" __declspec(dllexport) void PreInit() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::preInit();
 }
 extern "C" __declspec(dllexport) void Init() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::init();
 }
 extern "C" __declspec(dllexport) void PostInit() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::postInit();
 }
 extern "C" __declspec(dllexport) void D3DInit(IDXGISwapChain* swapChain, ID3D11Device* device, ID3D11DeviceContext* deviceContext) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onD3DInit(swapChain, device, deviceContext);
 }
 extern "C" __declspec(dllexport) void OnFrame(IDXGISwapChain* swapChain) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onFrame(swapChain);
 }
 extern "C" __declspec(dllexport) void OnResize(IDXGISwapChain* swapChain) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onResize(swapChain);
 }
 
 // Game hooks
 extern "C" __declspec(dllexport) void OnPvInit() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvInit();
 }
 
 extern "C" __declspec(dllexport) void OnPvInitComplete() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvInitComplete();
 }
 
 extern "C" __declspec(dllexport) void OnPvUpdate() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvUpdate();
 }
 
 extern "C" __declspec(dllexport) void OnPvExit() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvExit();
 }
 
 extern "C" __declspec(dllexport) void OnPvReset() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvReset();
 }
 
 extern "C" __declspec(dllexport) void OnPvGetHitState(PVGameArcade* game, PvGameTarget* target, HitState* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvGetHitState(game, target, result);
 }
 
 extern "C" __declspec(dllexport) void OnLoadDscUpdate(PVGamePvData* data, pv_db::PvDBEntry* entry, pv_db::PvDBDifficulty* difficulty, std::string& path, bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onLoadDscUpdate(data, entry, difficulty, path, result);
 }
 
 extern "C" __declspec(dllexport) void OnPvDBParseEntry(pv_db::PvDBEntry* entry, bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvDBParseEntry(entry, result);
 }
 
 extern "C" __declspec(dllexport) void OnDrawGame(PVGameArcade* game) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onDrawGame(game);
 }
 
 extern "C" __declspec(dllexport) void OnDrawGamePost(PVGameArcade* game) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onDrawGamePost(game);
 }
 
 extern "C" __declspec(dllexport) void OnUpdateTargets(PVGameArcade* game, float dt) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onUpdateTargets(game, dt);
 }
 
 extern "C" __declspec(dllexport) void OnDrawKiseki(PvGameTarget* target) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onDrawKiseki(target);
 }
 
 // FT PV selection menu hooks
 extern "C" __declspec(dllexport) void OnPvMenuInitFT(PVselPS4* sel, bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuInitFT(sel, result);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuCreateSortedPVListFT(PVselPS4* sel) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuCreateSortedPVListFT(sel);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuCtrlFT(PVselPS4* sel, bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuCtrlFT(sel, result);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuDestFT(bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuDestFT(result);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuDispFT() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuDispFT();
 }
 
 // MM+ PV selection menu hooks
 extern "C" __declspec(dllexport) void OnPvMenuInit(bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuInit(result);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuCreateSortedPVList(PVSelectorSwitch* sel, bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuCreateSortedPVList(sel, result);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuCtrl(PVSelectorSwitch* sel, bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuCtrl(sel, result);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuDest(bool* result) {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuDest(result);
 }
 
 extern "C" __declspec(dllexport) void OnPvMenuDisp() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onPvMenuDisp();
 }
 
 // Tasks
 extern "C" __declspec(dllexport) void OnHxTaskCtrl() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onHxTaskCtrl();
 }
 
 extern "C" __declspec(dllexport) void OnHxTaskDisp() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onHxTaskDisp();
 }
 
 extern "C" __declspec(dllexport) void OnHxTaskBasic() {
+    if (g_haxeDead) return;
     ::diva::Diva_obj::onHxTaskBasic();
 }
 ')
@@ -224,16 +255,19 @@ class Diva {
 	 * @since 1.0.0-alpha.1
 	 */
 	public static function initMod() {
-		Log.trace = (v:Dynamic, ?p:PosInfos) -> DLogger.info(v);
-		Gc.enable(false);
-		var data = Resource.getString('modData');
-		if (data != null) {
-			var modData = Json.parse(data);
-			modName = modData.name ?? modName;
-			modVersion = modData.version ?? modVersion;
-		}
-		hookManager = new DHookManager();
-		taskManager = new DTaskManager();
+		DCrashHandler.install();
+		DCrashHandler.guarded(() -> {
+			Log.trace = (v:Dynamic, ?p:PosInfos) -> DLogger.info(v);
+			Gc.enable(false);
+			var data = Resource.getString('modData');
+			if (data != null) {
+				var modData = Json.parse(data);
+				modName = modData.name ?? modName;
+				modVersion = modData.version ?? modVersion;
+			}
+			hookManager = new DHookManager();
+			taskManager = new DTaskManager();
+		});
 	}
 
 	// --------- MOD HOOKS --------- //
@@ -310,9 +344,12 @@ class Diva {
 			switch (hook) {
 				case OnPvGetHitState(onPvGetHitState):
 					try {
-						onPvGetHitState(hitCtx);
+						DCrashHandler.guarded(() -> {
+							onPvGetHitState(hitCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnPvGetHitState game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnPvGetHitState game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -333,9 +370,12 @@ class Diva {
 			switch (hook) {
 				case OnLoadDscUpdate(onLoadDscUpdate):
 					try {
-						onLoadDscUpdate(dscCtrlCtx);
+						DCrashHandler.guarded(() -> {
+							onLoadDscUpdate(dscCtrlCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnLoadDscUpdate game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnLoadDscUpdate game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -353,9 +393,12 @@ class Diva {
 			switch (hook) {
 				case OnPvDBParseEntry(onPvDBParseEntry):
 					try {
-						onPvDBParseEntry(pvdbParseCtx);
+						DCrashHandler.guarded(() -> {
+							onPvDBParseEntry(pvdbParseCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnPvDBParseEntry game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnPvDBParseEntry game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -371,9 +414,12 @@ class Diva {
 			switch (hook) {
 				case OnDrawGame(onDrawGame):
 					try {
-						onDrawGame(drawCtx);
+						DCrashHandler.guarded(() -> {
+							onDrawGame(drawCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnDrawGame game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnDrawGame game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -387,9 +433,12 @@ class Diva {
 			switch (hook) {
 				case OnDrawGamePost(onDrawGamePost):
 					try {
-						onDrawGamePost(drawCtx);
+						DCrashHandler.guarded(() -> {
+							onDrawGamePost(drawCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnDrawGamePost game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnDrawGamePost game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -404,9 +453,12 @@ class Diva {
 			switch (hook) {
 				case OnUpdateTargets(onUpdateTargets):
 					try {
-						onUpdateTargets(targetUpdateCtx);
+						DCrashHandler.guarded(() -> {
+							onUpdateTargets(targetUpdateCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnUpdateTargets game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnUpdateTargets game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -420,9 +472,12 @@ class Diva {
 			switch (hook) {
 				case OnDrawKiseki(onDrawKiseki):
 					try {
-						onDrawKiseki(targetCtx);
+						DCrashHandler.guarded(() -> {
+							onDrawKiseki(targetCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnDrawKiseki game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnDrawKiseki game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -438,9 +493,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuInit(onMenuInit):
 					try {
-						onMenuInit(menuSelCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuInit(menuSelCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuInit[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuInit[FT] menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -455,9 +513,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuCreateSortedPVList(onMenuCreateSortedPVList):
 					try {
-						onMenuCreateSortedPVList(basicMenuSelCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuCreateSortedPVList(basicMenuSelCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuCreateSortedPVList[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuCreateSortedPVList[FT] menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -472,9 +533,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuUpdate(onMenuUpdate):
 					try {
-						onMenuUpdate(menuSelCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuUpdate(menuSelCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuUpdate[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuUpdate[FT] menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -487,9 +551,10 @@ class Diva {
 			switch (hook) {
 				case OnMenuDraw(onMenuDraw):
 					try {
-						onMenuDraw();
+						DCrashHandler.guarded(onMenuDraw);
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuDraw[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuDraw[FT] menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -503,9 +568,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuExit(onMenuExit):
 					try {
-						onMenuExit(resCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuExit(resCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuExit[FT] menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuExit[FT] menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -521,9 +589,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuInit(onMenuInit):
 					try {
-						onMenuInit(resCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuInit(resCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuInit menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuInit menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -539,9 +610,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuCreateSortedPVList(onMenuCreateSortedPVList):
 					try {
-						onMenuCreateSortedPVList(menuSelCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuCreateSortedPVList(menuSelCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuCreateSortedPVList menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuCreateSortedPVList menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -557,9 +631,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuUpdate(onMenuUpdate):
 					try {
-						onMenuUpdate(menuSelCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuUpdate(menuSelCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuUpdate menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuUpdate menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -574,9 +651,12 @@ class Diva {
 			switch (hook) {
 				case OnMenuExit(onMenuExit):
 					try {
-						onMenuExit(resCtx);
+						DCrashHandler.guarded(() -> {
+							onMenuExit(resCtx);
+						});
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuExit menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuExit menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -589,9 +669,10 @@ class Diva {
 			switch (hook) {
 				case OnMenuDraw(onMenuDraw):
 					try {
-						onMenuDraw();
+						DCrashHandler.guarded(onMenuDraw);
 					} catch (e) {
-						DLogger.error('Uncaught error during OnMenuDraw menu hook: ${e.message}\nStack:\n${e.stack.toString()}');
+						DCrashHandler.markDead();
+						DLogger.error('Uncaught error during OnMenuDraw menu hook: ${e.message}\n\nStack:${e.stack.toString()}');
 					}
 				default:
 			}
@@ -601,25 +682,28 @@ class Diva {
 	// ------------ TASKS ------------ //
 	static function onHxTaskCtrl() {
 		try {
-			taskManager.update();
+			DCrashHandler.guarded(taskManager.update);
 		} catch (e) {
-			DLogger.error('Uncaught error during task update: ${e.message}\nStack:\n${e.stack.toString()}');
+			DCrashHandler.markDead();
+			DLogger.error('Uncaught error during task update: ${e.message}\n\nStack:${e.stack.toString()}');
 		}
 	}
 
 	static function onHxTaskDisp() {
 		try {
-			taskManager.draw();
+			DCrashHandler.guarded(taskManager.draw);
 		} catch (e) {
-			DLogger.error('Uncaught error during task draw: ${e.message}\nStack:\n${e.stack.toString()}');
+			DCrashHandler.markDead();
+			DLogger.error('Uncaught error during task draw: ${e.message}\n\nStack:${e.stack.toString()}');
 		}
 	}
 
 	static function onHxTaskBasic() {
 		try {
-			taskManager.basic();
+			DCrashHandler.guarded(taskManager.basic);
 		} catch (e) {
-			DLogger.error('Uncaught error during task basic: ${e.message}\nStack:\n${e.stack.toString()}');
+			DCrashHandler.markDead();
+			DLogger.error('Uncaught error during task basic: ${e.message}\n\nStack:${e.stack.toString()}');
 		}
 	}
 
@@ -647,22 +731,31 @@ class Diva {
 			var argList = args.toArray();
 			switch (hook) {
 				case PreInit(preInitHook):
-					preInitHook();
+					DCrashHandler.guarded(preInitHook);
 				case Init(initHook):
-					initHook();
+					DCrashHandler.guarded(initHook);
 				case PostInit(postInitHook):
-					postInitHook();
+					DCrashHandler.guarded(postInitHook);
 				case D3DInit(d3dInitHook):
-					d3dInitHook(argList[0], argList[1], argList[2]);
+					DCrashHandler.guarded(() -> {
+						d3dInitHook(argList[0], argList[1], argList[2]);
+					});
 				case OnFrame(onFrameHook):
-					onFrameHook(argList[0]);
+					DCrashHandler.guarded(() -> {
+						onFrameHook(argList[0]);
+					});
 				case OnResize(onResizeHook):
-					onResizeHook(argList[0]);
+					DCrashHandler.guarded(() -> {
+						onResizeHook(argList[0]);
+					});
 				case OnSwapChain(onSwapChain):
-					onSwapChain(argList[0]);
+					DCrashHandler.guarded(() -> {
+						onSwapChain(argList[0]);
+					});
 			}
 		} catch (e) {
-			DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} mod hook: ${e.message}\nStack:\n${e.stack.toString()}');
+			DCrashHandler.markDead();
+			DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} mod hook: ${e.message}\n\nStack:${e.stack.toString()}');
 		}
 	}
 
@@ -671,19 +764,20 @@ class Diva {
 			var argList = args.toArray();
 			switch (hook) {
 				case OnPvInit(onPvInitHook):
-					onPvInitHook();
+					DCrashHandler.guarded(onPvInitHook);
 				case OnPvInitComplete(onPvInitCompleteHook):
-					onPvInitCompleteHook();
+					DCrashHandler.guarded(onPvInitCompleteHook);
 				case OnPvUpdate(onPvUpdateHook):
-					onPvUpdateHook();
+					DCrashHandler.guarded(onPvUpdateHook);
 				case OnPvExit(onPvExitHook):
-					onPvExitHook();
+					DCrashHandler.guarded(onPvExitHook);
 				case OnPvReset(onPvResetHook):
-					onPvResetHook();
+					DCrashHandler.guarded(onPvResetHook);
 				default:
 			}
 		} catch (e) {
-			DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} game hook: ${e.message}\nStack:\n${e.stack.toString()}');
+			DCrashHandler.markDead();
+			DLogger.error('Uncaught error during ${Type.enumConstructor(hook)} game hook: ${e.message}\n\nStack:${e.stack.toString()}');
 		}
 	}
 }

@@ -10,6 +10,9 @@ import cpp.Reference;
 @:structAccess
 extern class PVGameArcade {
 	@:native('play') var play:Bool;
+	@:native('target') var target:RawPointer<PvGameTarget>;
+	// Array, length is 64
+	@:native('target_buffer') var targetBuffer:RawPointer<PvGameTarget>;
 	@:native('target_time') var targetTime:Float32;
 	@:native('cool_early_window') var coolEarlyWindow:Float32;
 	@:native('cool_late_window') var coolLateWindow:Float32;
@@ -27,8 +30,4 @@ extern class PVGameArcade {
 	@:native('slide_hit_effects') var slideHitEffects:RawPointer<Int32>;
 	@:native('slide_hit_effect_index') var slideHitEffectIndex:Int32;
 	@:native('mute_slide_chime') var muteSlideChime:Bool;
-
-	// Array, length is 64
-	@:native('::ArcadeTargetAt') static function targetAt(arcade:PVGameArcade, index:Int):Reference<PvGameTarget>;
-	@:native('::ArcadeCurrentTarget') static function curTarget(arcade:PVGameArcade):Reference<PvGameTarget>;
 }
