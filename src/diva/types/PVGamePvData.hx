@@ -5,6 +5,8 @@ import cpp.RawPointer;
 import cpp.Reference;
 import cpp.SizeT;
 import cpp.UInt64;
+import diva.types.dsc.DscState;
+import diva.types.dsc.PvDscTargetGroup;
 import diva.types.prj.PrjVector;
 
 @:include('diva_types.h')

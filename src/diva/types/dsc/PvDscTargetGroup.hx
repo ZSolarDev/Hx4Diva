@@ -1,4 +1,4 @@
-package diva.types;
+package diva.types.dsc;
 
 import cpp.Int32;
 import cpp.Int64;

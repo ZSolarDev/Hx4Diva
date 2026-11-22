@@ -34,11 +34,19 @@ import haxe.Resource;
 #end
 @:include('diva_types.h')
 @:include('string')
+@:include('cstdio')
 // I am technically sharing the diva namespace between
 // diva_types.h and my package, but hxcpp has special naming conventions
 // internally, so it shouldn't be an issue.
 @:cppFileCode('
-#include <cstdio>
+#include "DivaMain.h"
+
+// Entrypoint
+extern "C" __declspec(dllexport) void Main() {
+    if (g_haxeDead) return;
+    DivaMain_obj::entrypoint();
+}
+
 // Mod hooks
 extern "C" __declspec(dllexport) void PreInit() {
     if (g_haxeDead) return;

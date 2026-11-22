@@ -6,7 +6,6 @@ import cpp.Int32;
 import cpp.RawPointer;
 import cpp.Star;
 import cpp.UInt32;
-import cpp.UInt32;
 import cpp.Void as CppVoid;
 import diva.types.prj.PrjString;
 

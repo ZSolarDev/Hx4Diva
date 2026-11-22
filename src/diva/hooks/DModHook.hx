@@ -55,7 +55,7 @@ enum DModHook {
 
 	/**
 	 * Runs every time the games buffers are resized, primarily during
-     * window resizing.
+	 * window resizing.
 	 * 
 	 * @param hook The function, containing the swap chain.
 	 * @since 1.0.0-alpha.1

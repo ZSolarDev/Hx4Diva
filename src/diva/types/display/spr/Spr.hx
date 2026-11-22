@@ -28,7 +28,7 @@ extern class Spr {
 	@:native('::spr::SetFontSize') static function setFontSize(font:RawPointer<FontInfo>, w:Float32, h:Float32):Void;
 	// NOTE: Draw text to the screen (UTF-8, char*)
 	@:native('::spr::DrawTextA') static function drawTextA(params:RawPointer<TextArgs>, flags:UInt32, text:ConstCharStar):Void;
-	@:native('::spr::DrawSimpleText') static function drawSimpleText(x:Float32, y:Float32, res:Int32, prio:Int32, text:ConstCharStar, center:Bool,
+	@:native('::spr::DrawSimpleText') static function drawSimpleText(x:Float32, y:Float32, res:ResolutionMode, prio:Int32, text:ConstCharStar, center:Bool,
 		color:UInt32, clip:RawPointer<Vec4>):Star<Star<CppVoid>>;
 	// FROM: https://github.com/vixen256/ps4/tree/master/src/diva.cpp
 	@:native('::spr::GetSpriteId') static function getSpriteId(a1:Star<CppVoid>, name:ConstCharStar):RawPointer<UInt32>;

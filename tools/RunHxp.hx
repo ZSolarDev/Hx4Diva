@@ -9,13 +9,9 @@ using StringTools;
 class RunHxp extends Script {
 	override public function new() {
 		super();
-		var args = Sys.args();
 
-		args.pop();
-		args.pop();
-		args.shift();
-		var tCwd = args.pop();
-		var command = args.shift();
+		var tCwd = commandArgs.pop();
+		var command = commandArgs.shift();
 
 		if (FileSystem.exists('../_current'))
 			FileSystem.deleteFile('../_current');

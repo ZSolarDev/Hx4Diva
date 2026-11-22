@@ -15,14 +15,14 @@ void LoadAllFromFolder(const char* folder) {
     WIN32_FIND_DATAA findData;
     HANDLE hFind = FindFirstFileA(searchPath.c_str(), &findData);
 
-    if (hFind == INVALID_HANDLE_VALUE) return;
+    if (hFind == INVALID_HANDLE_VALUE)
+        return;
 
     do {
         std::string fullPath = std::string(folder) + "\\" + findData.cFileName;
         HMODULE hLib = LoadLibraryA(fullPath.c_str());
-        if (hLib) {
+        if (hLib)
             loadedLibs.push_back(hLib);
-        }
     } while (FindNextFileA(hFind, &findData));
 
     FindClose(hFind);
@@ -30,7 +30,8 @@ void LoadAllFromFolder(const char* folder) {
 
 // Unloads all loaded libraries and clears the list.
 void UnloadAll() {
-    for (HMODULE h : loadedLibs) FreeLibrary(h);
+    for (HMODULE h : loadedLibs)
+        FreeLibrary(h);
     loadedLibs.clear();
 }
 
@@ -48,14 +49,18 @@ void CallOnAll(const char* exportName, Args... args) {
     }
 }
 
-// Loads all DLLs from the "hxLibs" folder and calls their "hxRunLibrary" export on process attach, and unloads them on process detach.
-// Yes, Haxe uses hxRunLibrary instead of the standard DllMain. Dunno why, but honestly it was much more compatible than I had expected.
-// Better than not being able to compile DLLs at all, so I guess I'll take it.
+/*
+    Loads all DLLs from the "hxLibs" folder and calls their "hxRunLibrary" and "Main" exports on process attach, and unloads them on process detach.
+    Yes, Haxe uses hxRunLibrary instead of the standard DllMain. Dunno why, but honestly it was much more compatible than I had expected.
+    But for some reason in some cases, hxRunLibrary will not call main, so I have to call it manually. Not sure why this happens, but I just fixed it
+    by calling it manually after hxRunLibrary. Then again, it's better than not being able to compile DLLs at all, so I guess I'll take it.
+*/
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved) {
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
             LoadAllFromFolder("hxLibs");
             CallOnAll<void()>("hxRunLibrary");
+            CallOnAll<void()>("Main");
             break;
     }
     return TRUE;

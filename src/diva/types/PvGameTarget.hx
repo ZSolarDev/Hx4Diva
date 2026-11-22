@@ -3,13 +3,17 @@ package diva.types;
 import cpp.Float32;
 import cpp.Int32;
 import cpp.Int64;
+import cpp.RawPointer;
 import cpp.Reference;
+import cpp.Star;
 import diva.types.display.spr.SpriteVertex;
 
 @:include('diva_types.h')
 @:native('PvGameTarget')
 @:structAccess
 extern class PvGameTarget {
+	@:native('prev') var prev:Star<PvGameTarget>;
+	@:native('next') var next:Star<PvGameTarget>;
 	@:native('target_type') var targetType:Int32;
 	@:native('flying_time_remaining') var flyingTimeRemaining:Float32;
 	@:native('player_hit_time') var playerHitTime:Float32;
@@ -41,12 +45,7 @@ extern class PvGameTarget {
 	@:native('sprite_index') var spriteIndex:Int32;
 	@:native('appear_time') var appearTime:Int64;
 	@:native('kiseki_width') var kisekiWidth:Float32;
-	@:native('target_index') var targetIndex:Int32;
-
-	@:native('::TargetPrev') static function getPreviousTarget(target:PvGameTarget):Reference<PvGameTarget>;
-	@:native('::TargetNext') static function getNextTarget(target:PvGameTarget):Reference<PvGameTarget>;
-	@:native('::HasPrev') static function hasPreviousTarget(target:PvGameTarget):Bool;
-	@:native('::HasNext') static function hasNextTarget(target:PvGameTarget):Bool;
 	// kiseki means 'trail'. It's a list of 40 trail vertices.
-	@:native('::KisekiAt') static function getKiseki(target:PvGameTarget, index:Int):Reference<SpriteVertex>;
+	@:native('kiseki') var kiseki:RawPointer<SpriteVertex>;
+	@:native('target_index') var targetIndex:Int32;
 }

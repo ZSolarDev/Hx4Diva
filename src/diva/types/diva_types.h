@@ -798,12 +798,6 @@ struct PvGameTarget
 	int32_t dword4C4;
 };
 
-inline PvGameTarget& TargetPrev(PvGameTarget& t) { return *t.prev; }
-inline PvGameTarget& TargetNext(PvGameTarget& t) { return *t.next; }
-inline bool HasPrev(const PvGameTarget& t) { return t.prev != nullptr; }
-inline bool HasNext(const PvGameTarget& t) { return t.next != nullptr; }
-inline SpriteVertex& KisekiAt(PvGameTarget& t, int i) { return t.kiseki[i]; }
-
 struct PVGameArcade
 {
 	bool play;

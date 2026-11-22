@@ -1,9 +1,9 @@
-package diva.types.display.aet;
+package diva.types.display;
 
 import cpp.Int32;
 
-// Since 1.0.0-alpha.3
-enum abstract AetResMode(Int32) from Int32 to Int32 {
+// Since 1.0.0-alpha.6
+enum abstract ResolutionMode(Int32) from Int32 to Int32 {
 	var Res_QVGA = 0x00;
 	var Res_VGA = 0x01;
 	var Res_SVGA = 0x02;

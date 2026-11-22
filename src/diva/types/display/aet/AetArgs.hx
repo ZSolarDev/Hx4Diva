@@ -25,7 +25,7 @@ extern class AetArgs {
 	@:native('index') var index:Int32;
 	@:native('layer') var layer:Int32;
 	@:native('prio') var prio:Int32;
-	@:native('res_mode') var resMode:AetResMode;
+	@:native('res_mode') var resMode:ResolutionMode;
 	@:native('pos') var pos:Reference<Vec3>;
 	@:native('rot') var rot:Reference<Vec3>;
 	@:native('scale') var scale:Reference<Vec3>;

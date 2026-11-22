@@ -4,9 +4,9 @@
   "license": "MIT",
   "tags": ["project-diva", "hxcpp", "useless"],
   "description": "A framework for modding Project DIVA Mega Mix+ in Haxe.",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "classPath": "src/",
-  "releasenote": "Implement proper crash handling, add mod project defines, make target and targetBuffer directly accessible from PvGameArcade, etc.",
+  "releasenote": "Updated building, expanded linc_diva, etc. See changelog for more info.",
   "contributors": ["ZSolarDev", "Aura39"],
   "dependencies": {
     "hxcpp": "",
